@@ -10,7 +10,7 @@ public:
 	SceneInfo(ofApp *set_):SceneBase(set_){
 		setup();
 		_order_scene=5;
-
+		_timer_in[2]=FrameTimer(_timer_in[2].getDue(),EaseDue*1.5);
 
 		ofAddListener(SceneBase::sceneInFinish,this,&SceneInfo::onSceneInFinish);
 
@@ -28,15 +28,18 @@ public:
 		button_.loadImage("ui/button-06.png");
 		_img_ui.push_back(button_);
 
-
-		/*_img_hint.loadImage("ui/content/01-1.png");
-		_timer_hint=FrameTimer(1500);
-*/
-
 		_button.push_back(ofRectangle(1054,729,150,75));
+
+		_mlayer=3;
+
+		_zindex.push_back(0);
+		_zindex.push_back(1);
+		_zindex.push_back(2);
+
 	} 
-	void draw(){
-		SceneBase::draw();
+	void drawLayer(int i){
+		if(i==0) ofSetColor(_ptr_app->getSelectColor());	
+		SceneBase::drawLayer(i);
 	}
 	void update(float dt_){
 		SceneBase::update(dt_);
@@ -53,6 +56,25 @@ public:
 		//if(e==_order_scene) _timer_hint.restart();
 	}
 
+	void draw(){	
+
+		for(auto& i:_zindex){
+
+			ofPushStyle();
+			if(i==_mlayer-1) ofSetColor(255,255*_timer_in[i].valEaseInOut()*(1-_timer_out[i].valEaseInOut()));		
+
+			ofPushMatrix();			
+			if(i!=_mlayer-1)
+				ofTranslate(_img_ui[i].getWidth()*(1-_timer_in[i].valEaseInOut()-_timer_out[i].valEaseInOut()),0);
+			
+			if(i!=0 || _status!=Init) drawLayer(i);	
+
+			ofPopMatrix();
+
+			ofPopStyle();	
+		}	
+
+	}
 
 };
 

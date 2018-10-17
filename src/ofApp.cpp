@@ -18,11 +18,13 @@ void ofApp::setup(){
 	_now_millis=ofGetElapsedTimeMillis();
 
 	SceneBase::WinScale=max(ofGetWidth()/1920.0,ofGetHeight()/1080.0);
+	SceneBase::SoundButton.load("sound/button.wav");
 	TextRunner::TextFont.loadFont("font/NotoSansCJKtc-Regular.otf",21);
 	TextRunner::CharWid=TextRunner::TextFont.getFontSize()*1.4;
 
+	ofDisableArbTex();
 	_img_back.loadImage("ui/back.png");
-	
+	_img_back.getTextureReference().setTextureWrap(GL_MIRRORED_REPEAT,GL_MIRRORED_REPEAT);
 	
 	loadScene();
 	/*_mode=PEMPTY;
@@ -31,6 +33,22 @@ void ofApp::setup(){
 	_mode_pre=PEMPTY;
 	_mode=PHOME;
 	_scene[_mode]->init();
+
+	_mesh_back.addVertex(ofVec2f(0,0));
+	_mesh_back.addVertex(ofVec2f(ofGetWidth(),0));
+	_mesh_back.addVertex(ofVec2f(ofGetWidth(),ofGetHeight()));
+
+	_mesh_back.addVertex(ofVec2f(ofGetWidth(),ofGetHeight()));
+	_mesh_back.addVertex(ofVec2f(0,ofGetHeight()));
+	_mesh_back.addVertex(ofVec2f(0,0));
+	
+	_mesh_back.addTexCoord(ofVec2f(0,0));
+	_mesh_back.addTexCoord(ofVec2f(1,0));
+	_mesh_back.addTexCoord(ofVec2f(1,1));
+	
+	_mesh_back.addTexCoord(ofVec2f(1,1));
+	_mesh_back.addTexCoord(ofVec2f(0,1));
+	_mesh_back.addTexCoord(ofVec2f(0,0));
 
 
 	ofAddListener(SceneBase::sceneInFinish,this,&ofApp::onSceneInFinish);
@@ -48,14 +66,26 @@ void ofApp::update(){
 	
 	_scene[_mode]->update(dt_);
 
+	float tp=_now_millis/150000.0;
+	_mesh_back.setTexCoord(0,ofVec2f(tp,0));
+	_mesh_back.setTexCoord(1,ofVec2f(1+tp,0));
+	_mesh_back.setTexCoord(2,ofVec2f(1+tp,1));
+	_mesh_back.setTexCoord(3,ofVec2f(1+tp,1));
+	_mesh_back.setTexCoord(4,ofVec2f(tp,1));
+	_mesh_back.setTexCoord(5,ofVec2f(tp,0));
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
 	ofSetBackgroundColor(255);
 	ofEnableAlphaBlending();
-	_img_back.draw(0,0,ofGetWidth(),ofGetHeight());
 
+	ofEnableNormalizedTexCoords();
+	_img_back.bind();
+		_mesh_back.draw();
+	_img_back.unbind();
+	
+	ofDisableNormalizedTexCoords();
 
 
 	if(_in_transition && _mode_pre!=PStatus::PEMPTY){
@@ -120,12 +150,7 @@ void ofApp::loadScene(){
 void ofApp::setScene(PStatus set_){
 
 	ofLog()<<"set scene: "<<set_;
-	switch(set_){
-		case PCOLOR:
-			setSelectColor(2);
-			break;	
-	}
-
+	
 
 	_mode_pre=_mode;
 	_mode=set_;
@@ -146,3 +171,4 @@ void ofApp::setSelectColor(int set_){
 ofColor ofApp::getSelectColor(){
 	return MainColor[_select_color];
 }
+

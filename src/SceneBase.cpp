@@ -13,15 +13,23 @@ SceneBase::SceneBase(ofApp *set_ptr){
 void SceneBase::setup(){
 
 	loadImage();
-
-	_mlayer=_img_ui.size();
+	
 	setupTimer();
 }
 void SceneBase::setupTimer(){	
-	
+
 	for(int i=0;i<_mlayer;++i){
-		_timer_in.push_back(FrameTimer(EaseDue*(1+EaseDistort*i),i*EaseDelay));
-		_timer_out.push_back(FrameTimer(EaseDue*(1+EaseDistort*i),i*EaseDelay));
+		if(i==_mlayer-1){
+			_timer_in.push_back(FrameTimer(EaseDue*.5,i*EaseDelay+(EaseDue*1.5+EaseDue*EaseDistort*(i-2))));
+			_timer_out.push_back(FrameTimer(EaseDue*.5));
+		}else if(i==0){
+			_timer_in.push_back(FrameTimer(EaseDue*(1+EaseDistort*(_mlayer-2)),EaseDue*.5+i*EaseDelay));
+			_timer_out.push_back(FrameTimer(EaseDue*(1+EaseDistort*i),EaseDue*.5));
+		}else{
+			_timer_in.push_back(FrameTimer(EaseDue*(1+EaseDistort*i),EaseDue*.5+i*EaseDelay));
+			_timer_out.push_back(FrameTimer(EaseDue*(1+EaseDistort*i),EaseDue*.5));
+
+		}
 	}
 	
 }
@@ -39,20 +47,20 @@ void SceneBase::drawScaled(bool debug_){
 }
 void SceneBase::draw(){	
 	
-	for(int i=0;i<_mlayer;++i){
-		
+	for(auto& i:_zindex){
+				
 		ofPushStyle();
-		//ofSetColor(255,255*_timer_in[i].eval()*(1-_timer_out[i].eval()));
-		ofPushMatrix();
-		ofTranslate(_img_ui[i].getWidth()*(1-_timer_in[i].valEaseInOut()-_timer_out[i].valEaseInOut()),0);
-		
-		//if(_order_scene>1 && i==1) ofSetColor(_ptr_app->getSelectColor());
-			_img_ui[i].draw(0,0);
-		ofPopMatrix();
-
+		if(i==_mlayer-1) ofSetColor(255,255*_timer_in[i].valEaseInOut()*(1-_timer_out[i].valEaseInOut()));		
+			ofPushMatrix();
+			if(i!=_mlayer-1) ofTranslate(_img_ui[i].getWidth()*(1-_timer_in[i].valEaseInOut()-_timer_out[i].valEaseInOut()),0);
+				drawLayer(i);
+			ofPopMatrix();
 		ofPopStyle();	
 	}	
 
+}
+void SceneBase::drawLayer(int i){
+		_img_ui[i].draw(0,0);
 }
 void SceneBase::drawDebugInfo(){	
 	ofPushStyle();

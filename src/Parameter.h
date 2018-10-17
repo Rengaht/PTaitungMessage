@@ -17,6 +17,7 @@ public:
 	string _folder_export;
 	string _name_export;
 	vector<wstring> _question;
+	int _index_question;
 
 	int _time_record;
 
@@ -47,6 +48,9 @@ public:
 		for(int i=0;i<mquestion;++i){
 			_question.push_back(utf82ws(_param.getValue("QUESTION","",i)));
 		}
+		random_shuffle(_question.begin(),_question.end());
+		_index_question=0;
+
         
 		_folder_export=_param.getValue("FOLDER_EXPORT","");
 		_name_export=_param.getValue("NAME_EXPORT","");
@@ -94,8 +98,11 @@ public:
 
 	}
 	wstring getRandomQuestion(){
-		int m=floor(ofRandom(_question.size()));
-		return _question[m];
+			
+		(++_index_question)%=_question.size();
+		if(_index_question==0) random_shuffle(_question.begin(),_question.end());
+
+		return _question[_index_question];
 	}
 
 };

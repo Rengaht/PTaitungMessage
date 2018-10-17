@@ -7,13 +7,14 @@
 class SceneColor:public SceneBase{
 
 	
-	
-
+	FrameTimer _timer_color;
+	ofColor _color,_pre_color;
 public:
 	
 	SceneColor(ofApp *set_):SceneBase(set_){
 		setup();
 		_order_scene=2;
+		_timer_color=FrameTimer(400);
 
 		//ofAddListener(SceneBase::sceneInFinish,this,&SceneColor::onSceneInFinish);
 
@@ -32,11 +33,9 @@ public:
 		obj_.loadImage("ui/obj-05.png");
 		_img_ui.push_back(obj_);
 		
-
-
-		/*_img_hint.loadImage("ui/content/01-1.png");
-		_timer_hint=FrameTimer(1500);
-*/
+		ofImage button2_;
+		button2_.loadImage("ui/button-01.png");
+		_img_ui.push_back(button2_);
 
 		_button.push_back(ofRectangle(1773,512,51,55));
 
@@ -45,14 +44,26 @@ public:
 		_button.push_back(ofRectangle(461,583,110,110));
 		_button.push_back(ofRectangle(619,583,110,110));
 
+		_mlayer=4;
+		_zindex.push_back(2);
+		_zindex.push_back(0);
+		_zindex.push_back(1);
+		_zindex.push_back(3);
+
 	} 
-	void draw(){
-		SceneBase::draw();
-		
+	void drawLayer(int i){		
+
+		if(i==2){
+			float v=_timer_color.valEaseInOut();
+			ofSetColor(ofLerp(_pre_color.r,_color.r,v),
+						ofLerp(_pre_color.g,_color.g,v),
+						ofLerp(_pre_color.b,_color.b,v));		
+		}
+		SceneBase::drawLayer(i);		
 	}
 	void update(float dt_){
 		SceneBase::update(dt_);
-
+		_timer_color.update(dt_);
 		
 	}
 
@@ -70,13 +81,22 @@ public:
 		}
 
 	}
-
+	void init(){
+		SceneBase::init();		
+		_ptr_app->setSelectColor(2);
+		_pre_color=_color=_ptr_app->getSelectColor();
+		_timer_color.reset();
+	}
 	void onSceneInFinish(int &e){	
 		//if(e==_order_scene) _timer_hint.restart();
 	}
 
-	void setColor(int set_){
+	void setColor(int set_){		
 		_ptr_app->setSelectColor(set_);
+
+		_timer_color.restart();
+		_pre_color=_color;
+		_color=_ptr_app->getSelectColor();
 	}
 };
 

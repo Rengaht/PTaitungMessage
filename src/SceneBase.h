@@ -4,7 +4,6 @@
 #define SCENE_BASE_H
 
 
-#define DRAW_DEBUG
 
 
 #include "ofMain.h"
@@ -37,7 +36,11 @@ public:
 
 	void drawScaled(bool debug_=false);
 	virtual void draw();
+	virtual void drawLayer(int i);
 	void drawDebugInfo();
+
+	list<int> _zindex;
+
 	virtual void init();
 	virtual void end();
 	virtual void update(float dt_);

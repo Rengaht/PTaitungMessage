@@ -30,10 +30,6 @@ public:
 		back_.loadImage("ui/title-01.png");
 		_img_ui.push_back(back_);
 
-		//ofImage text_;
-		//text_.loadImage("ui/text-01.png");
-		//_img_ui.push_back(text_);
-
 		ofImage obj_;
 		obj_.loadImage("ui/obj-01.png");
 		_img_ui.push_back(obj_);
@@ -42,16 +38,20 @@ public:
 		button_.loadImage("ui/button-01.png");
 		_img_ui.push_back(button_);
 
-		/*_img_hint.loadImage("ui/content/01-1.png");
-		_timer_hint=FrameTimer(1500);
-*/
-
 		_button.push_back(ofRectangle(1773,512,51,55));
+
+
+		_mlayer=3;
+		_zindex.push_back(1);
+		_zindex.push_back(0);
+		_zindex.push_back(2);
 	} 
-	void draw(){
-		SceneBase::draw();
-		_hint.draw();
+	
+	void drawLayer(int i){		
+		SceneBase::drawLayer(i);
+		if(i==0) _hint.draw();
 	}
+
 	void update(float dt_){
 		SceneBase::update(dt_);
 		_hint.update(dt_);

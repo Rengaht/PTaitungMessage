@@ -30,14 +30,17 @@ public:
 		_img_ui.push_back(button_);
 	
 
-		/*_img_hint.loadImage("ui/content/01-1.png");
-		_timer_hint=FrameTimer(1500);
-*/
-
 		_button.push_back(ofRectangle(1773,512,51,55));
+
+		_mlayer=3;
+		_zindex.push_back(0);
+		_zindex.push_back(1);
+		_zindex.push_back(2);
+
 	} 
-	void draw(){
-		SceneBase::draw();
+	void drawLayer(int i){		
+		if(i==0) ofSetColor(_ptr_app->getSelectColor());		
+		SceneBase::drawLayer(i);		
 	}
 	void update(float dt_){
 		SceneBase::update(dt_);
@@ -54,7 +57,23 @@ public:
 		//if(e==_order_scene) _timer_hint.restart();
 	}
 
+	void setupTimer(){	
 
+		for(int i=0;i<_mlayer;++i){
+			if(i==_mlayer-1){
+				_timer_in.push_back(FrameTimer(EaseDue*.5,i*EaseDelay+(EaseDue*1.5+EaseDue*EaseDistort*(i-2))));
+				_timer_out.push_back(FrameTimer(EaseDue*.5));
+			}else if(i==0){
+				_timer_in.push_back(FrameTimer(EaseDue*(1+EaseDistort*(_mlayer+1-2)),EaseDue*.5+i*EaseDelay));
+				_timer_out.push_back(FrameTimer(EaseDue*(1+EaseDistort*i),EaseDue*.5));
+			}else{
+				_timer_in.push_back(FrameTimer(EaseDue*(1+EaseDistort*i),EaseDue*.5+i*EaseDelay));
+				_timer_out.push_back(FrameTimer(EaseDue*(1+EaseDistort*i),EaseDue*.5));
+
+			}
+		}
+
+	}
 };
 
 

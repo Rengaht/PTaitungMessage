@@ -6,15 +6,32 @@
 
 class SceneIntro:public SceneBase{
 	
+	vector<TextRunner> _hint;
+	int _index_hint;
 public:
 	SceneIntro(ofApp *set_):SceneBase(set_){
 				
 		setup();
 		_order_scene=1;
 
+		_hint.push_back(TextRunner(959,435,L"什麼是你最喜歡的台東樣貌？"));
+		_hint.push_back(TextRunner(959,492,L"什麼是你觀察到台東不一樣的地方？"));
+		_hint.push_back(TextRunner(959,549,L"我們期待著你在這裡，"));
+		_hint.push_back(TextRunner(959,606,L"留下一些記憶、一些感觸，與自己對話，"));
+		_hint.push_back(TextRunner(959,663,L"將你的感觸保存在臺東吧！"));
 
+		int len=0;
+		for(auto& h:_hint){
+			h.setFadeOut(false);
+			len+=h.getTotalTime();
+		}
+
+		_timer_in[2]=FrameTimer(_timer_in[2].getDue(),EaseDue*1.5+len);
+
+		_index_hint=0;
+		
 		//ofAddListener(SceneBase::sceneInFinish,this,&SceneIntro::onSceneInFinish);
-
+		ofAddListener(_timer_in[0].finish_event,this,&SceneIntro::onObjInFinish);
 	}
 	void loadImage(){
 		
@@ -24,27 +41,35 @@ public:
 
 
 		ofImage text_;
-		text_.loadImage("ui/text-02.png");
+		text_.loadImage("ui/empty.png");
 		_img_ui.push_back(text_);
 
 		
 		ofImage button_;
 		button_.loadImage("ui/button-02.png");
-		_img_ui.push_back(button_);
-
-
-		/*_img_hint.loadImage("ui/content/01-1.png");
-		_timer_hint=FrameTimer(1500);
-*/
+		_img_ui.push_back(button_);		
 
 		_button.push_back(ofRectangle(1773,512,51,55));
+
+		_mlayer=3;
+		_zindex.push_back(0);
+		_zindex.push_back(1);
+		_zindex.push_back(2);
+
 	} 
-	void draw(){
-		SceneBase::draw();
+	void drawLayer(int i){		
+		SceneBase::drawLayer(i);
+		if(i==1) for(auto& h:_hint) h.draw();
 	}
 	void update(float dt_){
 		SceneBase::update(dt_);
-
+		_hint[_index_hint].update(dt_);
+		if(_hint[_index_hint].finish()){
+			if(_index_hint<_hint.size()-1){
+				_index_hint++;
+				_hint[_index_hint].restart();
+			}
+		}
 		
 	}
 
@@ -53,10 +78,15 @@ public:
 
 	}
 
-	void onSceneInFinish(int &e){	
-		//if(e==_order_scene) _timer_hint.restart();
+	void onObjInFinish(int &e){	
+		_hint[_index_hint].restart();
 	}
 
+	void init(){
+		SceneBase::init();
+		for(auto& t:_hint) t.reset();
+		_index_hint=0;
+	}
 
 };
 

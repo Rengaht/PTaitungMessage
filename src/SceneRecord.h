@@ -2,7 +2,16 @@
 #ifndef SCENE_RECORD_H
 #define SCENE_RECORD_H
 
+#define POS_PILL_LOPEN 0
+#define POS_PILL_LCLOSE 344
+
+#define POS_PILL_ROPEN 1304
+#define POS_PILL_RCLOSE 960
+#define POS_PILL_Y 170
+
 #include "SceneBase.h"
+
+
 
 class SceneRecord:public SceneBase{
 	
@@ -10,20 +19,25 @@ class SceneRecord:public SceneBase{
 	ofImage _img_listen;
 	ofImage _img_pill_left,_img_pill_right;
 
-	FrameTimer _timer_pill;
+	FrameTimer _timer_pill,_timer_scale;
 	FrameTimer _timer_record;
 
 	float _pos_dest_left,_pos_begin_left;
 	float _pos_dest_right,_pos_begin_right;
+	
+	float _dest_scale,_begin_scale;
+
 
 	TextRunner _hint;
 
 	ofxTrueTypeFontUC _font_time;
 
-	FrameTimer _timer_button;
+	FrameTimer _timer_button_in,_timer_button_out;
+	FrameTimer _timer_time_in,_timer_time_out;
+	
 
 public:
-	enum RMode {WAIT,RECORD,PLAY,FINISH};
+	enum RMode {LANDING,WAIT,RECORD,PLAY,FINISH,CLOSE};
 	RMode _mode;
 
 
@@ -34,12 +48,23 @@ public:
 
 		_timer_record=FrameTimer(_ptr_app->_param->_time_record);
 		_timer_pill=FrameTimer(800);
-		_timer_button=FrameTimer(400);
+		_timer_button_in=FrameTimer(400);
+		_timer_button_out=FrameTimer(400);
+
+		_timer_time_in=FrameTimer(500);
+		_timer_time_out=FrameTimer(500);
+
+
+		_begin_scale=1.0;
+		_dest_scale=1.316;
+		_timer_scale=FrameTimer(400);
 
 		_font_time.loadFont("font/GothamHTF-Book.ttf",34);
 
 		ofAddListener(SceneBase::sceneInFinish,this,&SceneRecord::onSceneInFinish);
-
+		ofAddListener(_timer_pill.finish_event,this,&SceneRecord::onPillFinish);
+		ofAddListener(_timer_button_in.finish_event,this,&SceneRecord::onButtonInFinish);
+		ofAddListener(_timer_scale.finish_event,this,&SceneRecord::onScaleFinish);
 
 	}
 	void loadImage(){
@@ -48,9 +73,6 @@ public:
 		obj_.loadImage("ui/obj-03.png");
 		_img_ui.push_back(obj_);
 
-		ofImage back_;
-		back_.loadImage("ui/title-03.png");
-		_img_ui.push_back(back_);
 
 		ofImage button_;
 		button_.loadImage("ui/button-03.png");
@@ -58,71 +80,110 @@ public:
 
 		_img_listen.loadImage("ui/button-04.png");
 
-		_img_pill_left.loadImage("ui/pill-14.png");
-		_img_pill_right.loadImage("ui/pill-22.png");
-
-		/*_img_hint.loadImage("ui/content/01-1.png");
-		_timer_hint=FrameTimer(1500);
-*/
+		_img_pill_left.loadImage("ui/pill-23.png");
+		_img_pill_right.loadImage("ui/pill-24.png");
+	
 
 		_button.push_back(ofRectangle(917,892,85,85));
 
 		_button.push_back(ofRectangle(826,928,57,57));
 		_button.push_back(ofRectangle(938,928,57,57));
 		_button.push_back(ofRectangle(1026,928,57,57));
+
+		_mlayer=2;
+		_zindex.push_back(0);
+		_zindex.push_back(1);
+
 	}
 	void setHint(){
 		auto str_=_ptr_app->_param->getRandomQuestion();
 		_hint=TextRunner(227,str_);	
-		_hint.setCont(true);
+		
+		//_hint.setCont(true);
 	}
 
-	void draw(){
+	void drawLayer(int i){
 		
 		float v=_timer_pill.valEaseInOut();
+		float v2=ofLerp(_begin_scale,_dest_scale,_timer_scale.valEaseInOut());
 
-		for(int i=0;i<_mlayer;++i){
+		float px1=ofLerp(_pos_begin_left,_pos_dest_left,v);
+		float px2=ofLerp(_pos_begin_right,_pos_dest_right,v);
+		float py=POS_PILL_Y;
+		float cx=960;
+		float cy=540;
 
-			ofPushStyle();
-			ofPushMatrix();
-			ofTranslate(_img_ui[i].getWidth()*(1-_timer_in[i].valEaseInOut()-_timer_out[i].valEaseInOut()),0);
+		switch(i){			
+			case 0: //pill
+				ofSetColor(_ptr_app->getSelectColor());	
 
-				switch(i){
-					case 1: //title
-						_img_ui[i].draw(0,0);
-						break;
-					case 0: //pill
-						_img_pill_left.draw(ofLerp(_pos_begin_left,_pos_dest_left,v),309,538,464);
-						_img_pill_right.draw(ofLerp(_pos_begin_right,_pos_dest_right,v),309,538,464);
-						break;
-					case 2: //button
-						if(_mode==RMode::WAIT) _img_ui[i].draw(0,0);
-						else if(_mode==RMode::FINISH) _img_listen.draw(0,0);				
-						break;				
-				}
-			ofPopMatrix();
+				ofPushMatrix();
+				ofTranslate(px1,py);	
+				ofTranslate(cx-px1,cy-py);
+				ofScale(v2,v2);
+				ofTranslate(-cx+px1,-cy+py);
+					_img_pill_left.draw(0,0);
+				ofPopMatrix();
 
-			ofPopStyle();	
+				ofPushMatrix();
+				ofTranslate(px2,py);	
+				ofTranslate(cx-px2,cy-py);
+				ofScale(v2,v2);
+				ofTranslate(-cx+px2,-cy+py);
+					_img_pill_right.draw(0,0);
+				ofPopMatrix();
+			
+				
+
+				break;
+			case 1: //button
+				ofPushStyle();
+				ofSetColor(255,255*_timer_button_in.valEaseInOut()*(1-_timer_button_out.valEaseInOut()));
+					
+					if(_mode==RMode::WAIT) _img_ui[i].draw(0,0);
+					else if(_mode==RMode::FINISH) _img_listen.draw(0,0);		
+
+				ofPopStyle();
+
+				float a=_timer_time_in.valEaseInOut()*(1-_timer_time_out.valEaseInOut());
+				ofPushStyle();
+				ofSetColor(255,255*a);
+					drawTime();				
+				ofPopStyle();
+
+				
+				_hint.draw(a);
+
+				break;				
 		}
 				
-		drawTime();
-
-
-		/*if(!_mode_record) _hint.draw(1-_timer_pill.val());
-		else */
-		_hint.draw();
 		
 	}
 	void update(float dt_){
 		SceneBase::update(dt_);
 		_timer_pill.update(dt_);
 		_timer_record.update(dt_);		
-		_hint.update(dt_);
+		
+		_timer_button_in.update(dt_);
+		_timer_button_out.update(dt_);
 
-		switch(_mode){
+		_timer_time_in.update(dt_);
+		_timer_time_out.update(dt_);
+
+		_timer_scale.update(dt_);
+		
+		_hint.update(dt_);
+		if(_hint.finish()){
+			setHint();
+			_hint.restart();
+		}
+
+		switch(_mode){		
 			case RECORD:
 			case PLAY:
 				if(_timer_record.finish()) setMode(FINISH);
+				break;
+			case CLOSE:				
 				break;
 		}
 		
@@ -142,15 +203,7 @@ public:
 				if(_mode==RMode::FINISH) setMode(PLAY);
 				break;
 			case 2:
-				if(_mode==RMode::FINISH){
-				
-					_ptr_app->setScene(ofApp::PStatus::PINFO);
-					_pos_begin_left=_pos_dest_left;
-					_pos_begin_right=_pos_dest_right;
-					_pos_dest_left=432;	
-					_pos_dest_right=960;	
-					_timer_pill.restart();
-				}
+				if(_mode==RMode::FINISH) setMode(CLOSE);
 				break;
 		}
 	}
@@ -158,14 +211,47 @@ public:
 		SceneBase::init();		
 		setHint();
 
-		_pos_begin_left=_pos_dest_left=432;
-		_pos_begin_right=_pos_dest_right=960;
 
-		
+		_pos_begin_left=_pos_dest_left=POS_PILL_LCLOSE;
+		_pos_begin_right=_pos_dest_right=POS_PILL_RCLOSE;
+
+		_timer_button_in.reset();
+		_timer_button_out.reset();
+		_timer_time_in.reset();
+		_timer_time_out.reset();
+
+		_timer_scale.reset();
 	}
 
 	void onSceneInFinish(int &e){	
-		if(e==_order_scene) setMode(RMode::WAIT);
+		if(e==_order_scene){
+			_pos_begin_left=_pos_dest_left;
+			_pos_begin_right=_pos_dest_right;
+			_pos_dest_left=POS_PILL_LOPEN;	
+			_pos_dest_right=POS_PILL_ROPEN;	
+		
+			setMode(LANDING);
+		}
+	}
+	void onPillFinish(int &e){	
+		if(_mode==LANDING){
+			_timer_time_in.restart();			
+			setMode(RMode::WAIT);
+
+		}else if(_mode==CLOSE){
+			_timer_button_out.restart();
+			_timer_time_out.restart();
+			
+			_timer_scale.restart();
+		}
+	}
+	void onScaleFinish(int &e){
+		if(_mode==CLOSE){
+			_ptr_app->setScene(ofApp::PStatus::PINFO);
+		}
+	}
+	void onButtonInFinish(int &e){
+		if(_mode==WAIT) _hint.restart();
 	}
 	
 	void setMode(RMode set_){
@@ -173,47 +259,41 @@ public:
 		ofLog()<<"set record  mode= "<<set_;
 
 		switch(set_){
-			case WAIT:
-				_pos_begin_left=_pos_dest_left;
-				_pos_begin_right=_pos_dest_right;
-				_pos_dest_left=73;	
-				_pos_dest_right=1310;	
-				_timer_pill.restart();
-				
+			case LANDING:
+				_timer_pill.restart();	
+				break;
+			case WAIT:				
 				_timer_record.reset();
-				_hint.restart();
+				_timer_button_out.reset();
+				_timer_button_in.restart();				
 				break;
 			case RECORD:
 				_timer_record.restart();									
+				_timer_button_out.restart();
 				break;
-			case FINISH:
+			case FINISH:				
+				_timer_button_in.restart();
+				_timer_button_out.reset();
 				break;
 			case PLAY:
-				_timer_record.restart();									
+				_timer_record.restart();
+				_timer_button_out.restart();
+				break;
+			case CLOSE:
+				_pos_begin_left=_pos_dest_left;
+				_pos_begin_right=_pos_dest_right;
+				_pos_dest_left=POS_PILL_LCLOSE;	
+				_pos_dest_right=POS_PILL_RCLOSE;	
+				_timer_pill.restart();
 				break;
 		
 		}
 		_mode=set_;
-		/*if(!_mode_record){
-			_pos_begin_left=73;		_pos_dest_left=432;
-			_pos_begin_right=1310;	_pos_dest_right=960;
-			
-			
-		}else{
-			_pos_dest_left=73;		_pos_begin_left=432;
-			_pos_dest_right=1310;	_pos_begin_right=960;
-			_hint.reset();
-
-		}
-
-		_timer_pill.restart();*/
-
-		
 	}
 	
 	void drawTime(){
 		ofPushStyle();
-		ofSetColor(255);
+		//ofSetColor(255);
 
 		
 		int last_=_timer_record.getDue()*(1.0-_timer_record.val());
@@ -221,28 +301,27 @@ public:
 		string sec_=ofToString(int(floor((last_%60000)/1000.0)),2,'0');
 		string mil_=ofToString(int(floor((last_%1000)/10.0)),2,'0');
 
-		
-
+	
 
 		float wid_=_font_time.getFontSize()*.9;
 		float x=0;
 
 		ofPushMatrix();
-		ofTranslate(960-wid_*(6+.14)/2,843);		
+		ofTranslate(960-wid_*(6+.6*2)/2,843);		
 			for(int i=0;i<2;++i){
 				_font_time.drawString(ofToString(min_[i]),x,0);
 				x+=wid_;
 			}
-			x+=wid_*.3;
+			x+=wid_*.1;
 			_font_time.drawString(":",x,0);
-			x+=wid_*.4;
+			x+=wid_*.5;
 			for(int i=0;i<2;++i){
 				_font_time.drawString(ofToString(sec_[i]),x,0);
 				x+=wid_;
 			}
-			x+=wid_*.3;
+			x+=wid_*.1;
 			_font_time.drawString(":",x,0);
-			x+=wid_*.4;
+			x+=wid_*.5;
 			for(int i=0;i<2;++i){
 				_font_time.drawString(ofToString(mil_[i]),x,0);
 				x+=wid_;
@@ -253,8 +332,32 @@ public:
 		ofPopStyle();
 	
 	}
+
+	void draw(){	
+
+		for(auto& i:_zindex){
+
+			ofPushStyle();
+			if(i==_mlayer-1) ofSetColor(255,255*_timer_in[i].valEaseInOut()*(1-_timer_out[i].valEaseInOut()));		
+			
+			ofPushMatrix();			
+			if(i!=_mlayer-1){
+				if(i==0 && _status==End){
+					ofTranslate(960*(-_timer_out[i].valEaseInOut()),0);
+				}else{
+					ofTranslate(_img_ui[i].getWidth()*(1-_timer_in[i].valEaseInOut()-_timer_out[i].valEaseInOut()),0);
+				}
+			}
+				drawLayer(i);
+			ofPopMatrix();
+
+			ofPopStyle();	
+		}	
+
+	}
 };
 
 
 
 #endif
+

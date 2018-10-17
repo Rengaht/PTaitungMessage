@@ -6,13 +6,13 @@ string Param::ParamFilePath="_param.xml";
 
 float SceneBase::WinScale=1;
 ofSoundPlayer SceneBase::SoundButton=ofSoundPlayer();
-float SceneBase::EaseDue=1000;
+float SceneBase::EaseDue=1200;
 float SceneBase::EaseDelay=0;
-float SceneBase::EaseDistort=0.1;
+float SceneBase::EaseDistort=0.25;
 
 
 ofxTrueTypeFontUC TextRunner::TextFont;
-int TextRunner::TimePerText=300;
+int TextRunner::TimePerText=200;
 float TextRunner::CharWid=0;
 
 ofColor ofApp::MainColor[4]={ofColor(219,83,16),ofColor(36,92,169),ofColor(249,249,250),ofColor(157,157,158)};

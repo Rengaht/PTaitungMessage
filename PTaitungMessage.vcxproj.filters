@@ -59,7 +59,7 @@
       <Filter>addons\ofxXmlSettings\libs</Filter>
     </ClCompile>
     <ClCompile Include="src\SceneBase.cpp">
-      <Filter>src</Filter>
+      <Filter>src\scene\element</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -110,6 +110,12 @@
     </Filter>
     <Filter Include="src\scene">
       <UniqueIdentifier>{a18a57d5-7c27-4c52-8a98-2bd06bc3799f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\util">
+      <UniqueIdentifier>{5ef94aea-48c8-40c4-bc17-3fbb3cebea03}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\scene\element">
+      <UniqueIdentifier>{f4789d7d-026c-47ee-be77-7f4e85052c33}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -185,15 +191,6 @@
     <ClInclude Include="..\..\..\addons\ofxXmlSettings\libs\tinyxml.h">
       <Filter>addons\ofxXmlSettings\libs</Filter>
     </ClInclude>
-    <ClInclude Include="src\FrameTimer.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\SceneBase.h">
-      <Filter>src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Parameter.h">
-      <Filter>src</Filter>
-    </ClInclude>
     <ClInclude Include="src\SceneRecord.h">
       <Filter>src\scene</Filter>
     </ClInclude>
@@ -212,8 +209,17 @@
     <ClInclude Include="src\SceneColor.h">
       <Filter>src\scene</Filter>
     </ClInclude>
+    <ClInclude Include="src\Parameter.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FrameTimer.h">
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SceneBase.h">
+      <Filter>src\scene\element</Filter>
+    </ClInclude>
     <ClInclude Include="src\TextRunner.h">
-      <Filter>src</Filter>
+      <Filter>src\scene\element</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

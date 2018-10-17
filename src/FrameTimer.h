@@ -75,6 +75,9 @@ public:
     float getDue(){
         return due;
     }
+	float getDelay(){
+		return delay;	
+	}
 
 	float valEase(){
 		float p=val();
@@ -89,9 +92,18 @@ public:
 		return -(t*t*t*t-1);
 	}
 	float valEaseInOut(){
-		float t=val();
-		if((t/=.5)<1) return .5*t*t*t*t;
-		return -.5*((t-=2)*t*t*t - 2);
+		float t=val();		
+		if(t<0){
+			//ofLog()<<t<<"  "<<0;
+			return 0;
+		}
+		float v=t;
+		if((t/=.5)<1) v=.5*t*t*t*t;
+		else v=-.5*((t-=2)*t*t*t - 2);
+
+		//ofLog()<<t<<"  "<<v;
+		return v;
+
 	}
 	float valFade(){
 		float d_=.05;
