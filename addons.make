@@ -1,3 +1,5 @@
+ofxBmFFT
+ofxLibsndfileRecorder
 ofxOsc
 ofxTrueTypeFontUC
 ofxXmlSettings

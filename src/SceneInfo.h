@@ -29,6 +29,7 @@ public:
 		_img_ui.push_back(button_);
 
 		_button.push_back(ofRectangle(1054,729,150,75));
+		for(int i=0;i<_button.size();++i) _enable_button.push_back(false);
 
 		_mlayer=3;
 
@@ -53,7 +54,8 @@ public:
 	}
 
 	void onSceneInFinish(int &e){	
-		//if(e==_order_scene) _timer_hint.restart();
+		if(e!=_order_scene) return;
+		for(auto& en:_enable_button) en=true;				
 	}
 
 	void draw(){	

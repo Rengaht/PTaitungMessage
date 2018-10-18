@@ -7,6 +7,21 @@
     <ClCompile Include="src\main.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\main.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ofApp.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxBmFFT\src\arithmetic.cpp">
+      <Filter>addons\ofxBmFFT\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxBmFFT\src\bmFFT.cpp">
+      <Filter>addons\ofxBmFFT\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxLibsndfileRecorder\src\ofxLibsndFileRecorder.cpp">
+      <Filter>addons\ofxLibsndfileRecorder\src</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\addons\ofxOsc\src\ofxOscBundle.cpp">
       <Filter>addons\ofxOsc\src</Filter>
     </ClCompile>
@@ -59,7 +74,7 @@
       <Filter>addons\ofxXmlSettings\libs</Filter>
     </ClCompile>
     <ClCompile Include="src\SceneBase.cpp">
-      <Filter>src\scene\element</Filter>
+      <Filter>src\scene\basic</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -68,6 +83,27 @@
     </Filter>
     <Filter Include="addons">
       <UniqueIdentifier>{71834F65-F3A9-211E-73B8-DC85}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxBmFFT">
+      <UniqueIdentifier>{A0E045DC-6A65-AE39-E29D-448E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxBmFFT\src">
+      <UniqueIdentifier>{C92E7AA1-2ED5-F624-2536-8D11}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxLibsndfileRecorder">
+      <UniqueIdentifier>{2EC53556-E7AF-85B0-272D-FF01}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxLibsndfileRecorder\src">
+      <UniqueIdentifier>{A6CC2AB5-3FFD-F488-E47F-1F49}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxLibsndfileRecorder\libs">
+      <UniqueIdentifier>{9EFEC89D-C036-EDDA-7487-C54D}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxLibsndfileRecorder\libs\libsndfile">
+      <UniqueIdentifier>{D1B8765C-30A9-BD80-7640-5636}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxLibsndfileRecorder\libs\libsndfile\include">
+      <UniqueIdentifier>{4B1806AB-2F31-0312-B95A-3FB5}</UniqueIdentifier>
     </Filter>
     <Filter Include="addons\ofxOsc">
       <UniqueIdentifier>{D91DCA33-6E5D-4481-2AEC-9FBB}</UniqueIdentifier>
@@ -109,18 +145,39 @@
       <UniqueIdentifier>{687714A8-1662-FA1C-261F-50F0}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\scene">
-      <UniqueIdentifier>{a18a57d5-7c27-4c52-8a98-2bd06bc3799f}</UniqueIdentifier>
+      <UniqueIdentifier>{eb4e6208-37d3-4888-a427-2fabffe3b27e}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\util">
-      <UniqueIdentifier>{5ef94aea-48c8-40c4-bc17-3fbb3cebea03}</UniqueIdentifier>
+      <UniqueIdentifier>{585eeea5-d7fa-4c6f-94ce-3c200f65e0d4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\scene\element">
-      <UniqueIdentifier>{f4789d7d-026c-47ee-be77-7f4e85052c33}</UniqueIdentifier>
+    <Filter Include="src\scene\basic">
+      <UniqueIdentifier>{c2cfac4a-cbe5-456f-b5dc-5f0fc541b30a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\ofApp.h">
       <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ofApp.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxBmFFT\src\arithmetic.h">
+      <Filter>addons\ofxBmFFT\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxBmFFT\src\bmFFT.h">
+      <Filter>addons\ofxBmFFT\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxBmFFT\src\logic.h">
+      <Filter>addons\ofxBmFFT\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxBmFFT\src\meta.h">
+      <Filter>addons\ofxBmFFT\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxLibsndfileRecorder\src\ofxLibsndFileRecorder.h">
+      <Filter>addons\ofxLibsndfileRecorder\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxLibsndfileRecorder\libs\libsndfile\include\sndfile.h">
+      <Filter>addons\ofxLibsndfileRecorder\libs\libsndfile\include</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\addons\ofxOsc\src\ofxOsc.h">
       <Filter>addons\ofxOsc\src</Filter>
@@ -191,7 +248,7 @@
     <ClInclude Include="..\..\..\addons\ofxXmlSettings\libs\tinyxml.h">
       <Filter>addons\ofxXmlSettings\libs</Filter>
     </ClInclude>
-    <ClInclude Include="src\SceneRecord.h">
+    <ClInclude Include="src\SceneColor.h">
       <Filter>src\scene</Filter>
     </ClInclude>
     <ClInclude Include="src\SceneHome.h">
@@ -206,20 +263,20 @@
     <ClInclude Include="src\SceneName.h">
       <Filter>src\scene</Filter>
     </ClInclude>
-    <ClInclude Include="src\SceneColor.h">
+    <ClInclude Include="src\SceneRecord.h">
       <Filter>src\scene</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Parameter.h">
-      <Filter>src\util</Filter>
     </ClInclude>
     <ClInclude Include="src\FrameTimer.h">
       <Filter>src\util</Filter>
     </ClInclude>
-    <ClInclude Include="src\SceneBase.h">
-      <Filter>src\scene\element</Filter>
+    <ClInclude Include="src\Parameter.h">
+      <Filter>src\util</Filter>
     </ClInclude>
     <ClInclude Include="src\TextRunner.h">
-      <Filter>src\scene\element</Filter>
+      <Filter>src\util</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SceneBase.h">
+      <Filter>src\scene\basic</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

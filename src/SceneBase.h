@@ -51,6 +51,7 @@ public:
 	ofVec2f _mouse_pos;
 	
 	vector<ofRectangle> _button;
+	vector<bool> _enable_button;
 
 	int _mlayer;
 	vector<FrameTimer> _timer_in;

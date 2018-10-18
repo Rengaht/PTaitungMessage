@@ -21,11 +21,14 @@ public:
 
 	int _time_record;
 
+	float _spectrum_scale;
+	float _spectrum_size;
+
 	Param(){
 		readParam();
 
 	}
-	static Param* GetInstance(){
+	static Param* val(){
 		if(!_instance)
 			_instance=new Param();
 		return _instance;
@@ -56,8 +59,9 @@ public:
 		_name_export=_param.getValue("NAME_EXPORT","");
 
 		_time_record=_param.getValue("TIME_RECORD",0);
+		_spectrum_scale=_param.getValue("SPECTRUM_SCALE",500000.0);
+		_spectrum_size=_param.getValue("SPECTRUM_SIZE",200.0);
 
-		
 		if(!file_exist) saveParameterFile();
 
 	
@@ -92,6 +96,8 @@ public:
 		_param.setValue("NAME_EXPORT",_name_export);
 
 		_param.setValue("TIME_RECORD",_time_record);
+		_param.setValue("SPECTRUM_SIZE",_spectrum_size);
+		_param.setValue("SPECTRUM_SCALE",_spectrum_scale);
 		
 		_param.save(ParamFilePath);
 

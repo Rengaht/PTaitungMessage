@@ -2,6 +2,7 @@
 
 #include "ofMain.h"
 #include "ofxLibsndFileRecorder.h"
+#include "bmFFT.h"
 
 #include "FrameTimer.h"
 #include "TextRunner.h"
@@ -9,15 +10,27 @@
 #include "Parameter.h"
 
 
-//#define DRAW_DEBUG
+#define DRAW_DEBUG
 
 #define NUM_CHANNELS 1
 #define SAMPLE_RATE 44100
-#define BUFFER_SIZE 1024
+#define BUFFER_SIZE 256
 
+#define FFT_NBANDS 16
+
+//#define SOUND_SCALE 500000
+//#define SPECTRUM_BUFFER_SIZE 200
 
 class ofApp : public ofBaseApp{
+		float _now_millis;
+
+		bool _recording;
+		bool _fft;
+
+		/* user info */
 		int _select_color;
+		string _path_record;
+
 	public:
 
 		static ofColor MainColor[4];
@@ -43,8 +56,7 @@ class ofApp : public ofBaseApp{
 
 		Param* _param;
 
-		float _now_millis;
-
+	
 		bool _in_transition;
 		void onSceneInFinish(int &e);
 		void onSceneOutFinish(int &e);
@@ -53,8 +65,23 @@ class ofApp : public ofBaseApp{
 		void setSelectColor(int set_);
 		ofColor getSelectColor();
 
+		ofSoundStream _sound_stream;
+		void audioIn(float * input, int bufferSize, int nChannels); 
 
-		void audioReceived(float * input, int bufferSize, int nChannels);
-		bool recording;
-		ofxLibsndFileRecorder audioRecorder;
+		void calcVolume(float *data,int bufferSize,int nchannels);
+		float _volume_now;
+		
+
+		void setRecording(bool set_);
+		ofxLibsndFileRecorder _recorder;
+		
+
+		ofSoundPlayer _player_record;
+		void playRecord();
+
+
+		// for fft
+		void setFFT(bool set_);
+		float* _fft_band;
+		
 };

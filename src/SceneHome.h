@@ -8,8 +8,7 @@
 class SceneHome:public SceneBase{
 
 	TextRunner _hint;
-	FrameTimer _timer_hint;
-
+	
 public:
 	SceneHome(ofApp *set_):SceneBase(set_){
 		
@@ -18,9 +17,10 @@ public:
 		_hint=TextRunner(959,741,L"走過臺東，你或許聽過海浪陣陣的旋律");
 		_hint.setCont(true);
 
-		_timer_hint=FrameTimer(5000);
+		_timer_in[2]=FrameTimer(EaseDue*.5,_timer_in[1].getDelay()+_timer_in[1].getDue()+_hint.getTotalTime());
 
 		_order_scene=0;
+		ofAddListener(_timer_in[1].finish_event,this,&SceneHome::onHintShoudBegin);
 		ofAddListener(SceneBase::sceneInFinish,this,&SceneHome::onSceneInFinish);
 
 	}
@@ -39,6 +39,7 @@ public:
 		_img_ui.push_back(button_);
 
 		_button.push_back(ofRectangle(1773,512,51,55));
+		for(int i=0;i<_button.size();++i) _enable_button.push_back(false);
 
 
 		_mlayer=3;
@@ -65,8 +66,12 @@ public:
 	}
 
 	void onSceneInFinish(int &e){	
-		if(e==_order_scene) _hint.restart();		
-			
+		if(e==_order_scene){					
+			for(auto& en:_enable_button) en=true;
+		}			
+	}
+	void onHintShoudBegin(int &e){
+		_hint.restart();
 	}
 	
 	void init(){

@@ -3,12 +3,13 @@
 
 
 string Param::ParamFilePath="_param.xml";
+Param *Param::_instance=0;
 
 float SceneBase::WinScale=1;
 ofSoundPlayer SceneBase::SoundButton=ofSoundPlayer();
 float SceneBase::EaseDue=1200;
 float SceneBase::EaseDelay=0;
-float SceneBase::EaseDistort=0.25;
+float SceneBase::EaseDistort=0.2;
 
 
 ofxTrueTypeFontUC TextRunner::TextFont;

@@ -13,12 +13,18 @@ void ofApp::setup(){
 
 	ofSetVerticalSync(true);
 	ofEnableSmoothing();
+	//ofSoundStreamSetup(0,NUM_CHANNELS,this, SAMPLE_RATE,BUFFER_SIZE,4);
+
+	_sound_stream.printDeviceList();
+	//_sound_stream.setDevice(_sound_stream.getDeviceList()[1]);
+	_sound_stream.setup(this, 0, NUM_CHANNELS, SAMPLE_RATE, BUFFER_SIZE, 4);
+	_fft_band=new float[FFT_NBANDS];
 
 	_param=new Param();
 	_now_millis=ofGetElapsedTimeMillis();
 
 	SceneBase::WinScale=max(ofGetWidth()/1920.0,ofGetHeight()/1080.0);
-	SceneBase::SoundButton.load("sound/button.wav");
+	SceneBase::SoundButton.load("sound/icon.wav");
 	TextRunner::TextFont.loadFont("font/NotoSansCJKtc-Regular.otf",21);
 	TextRunner::CharWid=TextRunner::TextFont.getFontSize()*1.4;
 
@@ -73,6 +79,7 @@ void ofApp::update(){
 	_mesh_back.setTexCoord(3,ofVec2f(1+tp,1));
 	_mesh_back.setTexCoord(4,ofVec2f(tp,1));
 	_mesh_back.setTexCoord(5,ofVec2f(tp,0));
+
 }
 
 //--------------------------------------------------------------
@@ -111,9 +118,9 @@ void ofApp::draw(){
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key){
 	switch(key){
-		//case 'a':
-		//	setScene(SceneMode((_mode+1)%5));
-		//	break;
+		case 'a':
+			setScene(PHOME);
+			break;
 		case 'f':
 			ofToggleFullscreen();
 			break;
@@ -172,3 +179,76 @@ ofColor ofApp::getSelectColor(){
 	return MainColor[_select_color];
 }
 
+void ofApp::setRecording(bool set_){
+	
+	if(set_){
+		ofLog()<<"Start recording\n";
+		string pt=_param->_folder_export+ofGetTimestampString("%Y%m%d%H%M%S")+".wav";
+
+		cout << pt<<"----\n";
+		_recorder.setup(pt,SAMPLE_RATE,NUM_CHANNELS);
+		_recorder.setFormat(SF_FORMAT_WAV | SF_FORMAT_PCM_16);
+		
+		_path_record=pt;	
+
+	}else{
+		ofLog()<<"Stop recording";		
+		_recorder.finalize();
+	
+	
+	}
+	_recording=set_;
+
+}
+void ofApp::audioIn(float * input, int bufferSize, int nChannels){
+	
+	if(_mode!=PRECORD) return;
+
+	if(_recording)
+		_recorder.addSamples(input,bufferSize*nChannels);
+	
+	calcVolume(input,bufferSize,nChannels);
+	BmFFT::getSimpleSpectrumMono(BUFFER_SIZE, input, _fft_band);
+	
+}
+void ofApp::calcVolume(float* data,int bufferSize,int nChannels){
+	
+	float cur_vol=0;
+	for(int i=0;i<bufferSize;++i){
+		if(nChannels==2){
+			float left_=data[i*2]*0.5*Param::val()->_spectrum_scale;
+			float right_=data[i*2+1]*0.5*Param::val()->_spectrum_scale;
+			cur_vol+=left_*left_;
+			cur_vol+=right_*right_;
+		}else{
+			cur_vol+=data[i]*Param::val()->_spectrum_scale;
+		}
+	}
+
+	cur_vol/=(float)(bufferSize*nChannels);	
+	//cur_vol=sqrt(cur_vol);
+	//ofLog()<<cur_vol;
+
+
+	//_volume_now=cur_vol;
+	
+	_volume_now*=0.8;
+	_volume_now+=0.2*cur_vol;
+}
+
+
+
+
+void ofApp::playRecord(){
+
+	if(_player_record.isLoaded()) _player_record.unloadSound();
+	_player_record.loadSound(_path_record);
+
+	_player_record.play();
+	
+
+}
+
+void ofApp::setFFT(bool set_){
+	_fft=set_;
+}

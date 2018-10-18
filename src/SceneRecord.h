@@ -35,6 +35,10 @@ class SceneRecord:public SceneBase{
 	FrameTimer _timer_button_in,_timer_button_out;
 	FrameTimer _timer_time_in,_timer_time_out;
 	
+	FrameTimer _timer_sample;
+
+	list<float> _volume_record;
+	int _index_spectrum;
 
 public:
 	enum RMode {LANDING,WAIT,RECORD,PLAY,FINISH,CLOSE};
@@ -49,15 +53,16 @@ public:
 		_timer_record=FrameTimer(_ptr_app->_param->_time_record);
 		_timer_pill=FrameTimer(800);
 		_timer_button_in=FrameTimer(400);
-		_timer_button_out=FrameTimer(400);
+		_timer_button_out=FrameTimer(200);
 
 		_timer_time_in=FrameTimer(500);
-		_timer_time_out=FrameTimer(500);
+		_timer_time_out=FrameTimer(250);
 
+		_timer_sample=FrameTimer(_ptr_app->_param->_time_record/(float)_ptr_app->_param->_spectrum_size);
 
 		_begin_scale=1.0;
 		_dest_scale=1.316;
-		_timer_scale=FrameTimer(400);
+		_timer_scale=FrameTimer(450);
 
 		_font_time.loadFont("font/GothamHTF-Book.ttf",34);
 
@@ -90,6 +95,8 @@ public:
 		_button.push_back(ofRectangle(938,928,57,57));
 		_button.push_back(ofRectangle(1026,928,57,57));
 
+		for(int i=0;i<_button.size();++i) _enable_button.push_back(false);
+
 		_mlayer=2;
 		_zindex.push_back(0);
 		_zindex.push_back(1);
@@ -105,7 +112,7 @@ public:
 	void drawLayer(int i){
 		
 		float v=_timer_pill.valEaseInOut();
-		float v2=ofLerp(_begin_scale,_dest_scale,_timer_scale.valEaseInOut());
+		float v2=ofLerp(_begin_scale,_dest_scale,_timer_scale.valEaseOut());
 
 		float px1=ofLerp(_pos_begin_left,_pos_dest_left,v);
 		float px2=ofLerp(_pos_begin_right,_pos_dest_right,v);
@@ -115,6 +122,9 @@ public:
 
 		switch(i){			
 			case 0: //pill
+
+				drawSpectrum();
+
 				ofSetColor(_ptr_app->getSelectColor());	
 
 				ofPushMatrix();
@@ -159,6 +169,8 @@ public:
 				
 		
 	}
+	
+
 	void update(float dt_){
 		SceneBase::update(dt_);
 		_timer_pill.update(dt_);
@@ -181,6 +193,7 @@ public:
 		switch(_mode){		
 			case RECORD:
 			case PLAY:
+				
 				if(_timer_record.finish()) setMode(FINISH);
 				break;
 			case CLOSE:				
@@ -188,6 +201,32 @@ public:
 		}
 		
 		
+		/*_timer_sample.update(dt_);
+		if(_timer_sample.finish()){
+			if(_mode==RECORD){
+				_volume_record.push_back(_ptr_app->_volume_now);
+				if(_volume_record.size()>Param::val()->_spectrum_size) _volume_record.pop_front();
+			}
+			_timer_sample.restart();
+			if(_index_spectrum<_volume_record.size()-1) _index_spectrum++;
+		}*/
+
+		_timer_sample.update(dt_);
+		if(_timer_sample.finish()){
+
+			if(_mode==RECORD){
+
+				int m=floor(Param::val()->_spectrum_size*_timer_record.val())-_volume_record.size();
+				for(int i=0;i<m;++i) _volume_record.push_back(_ptr_app->_volume_now);
+				if(_volume_record.size()>Param::val()->_spectrum_size) _volume_record.pop_front();
+				_index_spectrum+=m;
+
+			}else if(_mode==PLAY){
+				_index_spectrum=floor(_timer_record.val()*_volume_record.size());				
+			}
+			_timer_sample.restart();
+			_index_spectrum=ofClamp(_index_spectrum,0,_volume_record.size()-1);
+		}
 		
 	}
 
@@ -224,14 +263,17 @@ public:
 	}
 
 	void onSceneInFinish(int &e){	
-		if(e==_order_scene){
-			_pos_begin_left=_pos_dest_left;
-			_pos_begin_right=_pos_dest_right;
-			_pos_dest_left=POS_PILL_LOPEN;	
-			_pos_dest_right=POS_PILL_ROPEN;	
+		if(e!=_order_scene) return;
+
+		_pos_begin_left=_pos_dest_left;
+		_pos_begin_right=_pos_dest_right;
+		_pos_dest_left=POS_PILL_LOPEN;	
+		_pos_dest_right=POS_PILL_ROPEN;	
 		
-			setMode(LANDING);
-		}
+		_enable_button[0]=true;
+
+		setMode(LANDING);
+		
 	}
 	void onPillFinish(int &e){	
 		if(_mode==LANDING){
@@ -265,19 +307,42 @@ public:
 			case WAIT:				
 				_timer_record.reset();
 				_timer_button_out.reset();
-				_timer_button_in.restart();				
+				_timer_button_in.restart();	
+
+				_volume_record.clear();
+				_index_spectrum=0;
 				break;
 			case RECORD:
 				_timer_record.restart();									
 				_timer_button_out.restart();
+								
+				_ptr_app->setRecording(true);
+				
+				for(auto& en:_enable_button) en=false;
+				
+				_timer_sample.restart();
 				break;
 			case FINISH:				
 				_timer_button_in.restart();
 				_timer_button_out.reset();
+
+				if(_mode==RECORD) _ptr_app->setRecording(false);
+
+				_enable_button[1]=true;
+				_enable_button[2]=true;
+				_enable_button[3]=true;
+
 				break;
 			case PLAY:
+
+				_index_spectrum=0;
+
 				_timer_record.restart();
 				_timer_button_out.restart();
+				_ptr_app->playRecord();
+
+				for(auto& en:_enable_button) en=false;
+
 				break;
 			case CLOSE:
 				_pos_begin_left=_pos_dest_left;
@@ -285,6 +350,9 @@ public:
 				_pos_dest_left=POS_PILL_LCLOSE;	
 				_pos_dest_right=POS_PILL_RCLOSE;	
 				_timer_pill.restart();
+
+				for(auto& en:_enable_button) en=false;
+
 				break;
 		
 		}
@@ -332,7 +400,60 @@ public:
 		ofPopStyle();
 	
 	}
+	void drawSpectrum(){
+		float x1=616;
+		float x2=1304;
 
+		float wid=(x2-x1)/(_ptr_app->_param->_spectrum_size-1);
+		float x=0;
+
+		ofPushStyle();
+		ofSetColor(255);
+		ofNoFill();
+
+		ofPushMatrix();
+		ofTranslate(x1,540);				
+
+		float v=_ptr_app->_volume_now;
+		auto s=_volume_record.begin();
+
+		switch(_mode){
+			case LANDING:
+			case WAIT:
+				wid=(x2-x1)/(float)(FFT_NBANDS-1);
+				ofBeginShape();
+				ofVertex(0,0);
+				for(int i=0;i<FFT_NBANDS;++i){
+					//cout<<_ptr_app->_fft_band[i]<<" ";
+					ofVertex(x,-ofClamp(_ptr_app->_fft_band[i]*100,-255,255));
+					x+=wid;
+				}
+				//cout<<endl;
+				//ofVertex(x2-x1,0);
+				ofEndShape();
+				break;
+			case RECORD:
+			case PLAY:
+			case FINISH:
+			case CLOSE:
+				if(_index_spectrum>0){
+					ofBeginShape();
+					for(int i=0;i<_index_spectrum;++i,++s){
+						float a=ofClamp(*s,-225,225);
+						//ofDrawRectangle(x+wid*.1,0,wid*.8,a);
+						ofVertex(x,a);
+						ofVertex(x,-a);
+						x+=wid;
+					}
+					ofEndShape();
+				}
+			break;
+		}
+
+		ofPopMatrix();
+
+		ofPopStyle();
+	}
 	void draw(){	
 
 		for(auto& i:_zindex){

@@ -50,6 +50,7 @@ public:
 		_img_ui.push_back(button_);		
 
 		_button.push_back(ofRectangle(1773,512,51,55));
+		for(int i=0;i<_button.size();++i) _enable_button.push_back(false);
 
 		_mlayer=3;
 		_zindex.push_back(0);
@@ -79,7 +80,10 @@ public:
 	}
 
 	void onObjInFinish(int &e){	
+		if(e!=_order_scene) return;
+		
 		_hint[_index_hint].restart();
+		for(auto& en:_enable_button) en=true;
 	}
 
 	void init(){

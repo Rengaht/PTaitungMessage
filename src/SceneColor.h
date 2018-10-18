@@ -16,7 +16,7 @@ public:
 		_order_scene=2;
 		_timer_color=FrameTimer(400);
 
-		//ofAddListener(SceneBase::sceneInFinish,this,&SceneColor::onSceneInFinish);
+		ofAddListener(SceneBase::sceneInFinish,this,&SceneColor::onSceneInFinish);
 
 	}
 	void loadImage(){
@@ -43,6 +43,8 @@ public:
 		_button.push_back(ofRectangle(302,583,110,110));
 		_button.push_back(ofRectangle(461,583,110,110));
 		_button.push_back(ofRectangle(619,583,110,110));
+
+		for(int i=0;i<_button.size();++i) _enable_button.push_back(false);
 
 		_mlayer=4;
 		_zindex.push_back(2);
@@ -88,7 +90,8 @@ public:
 		_timer_color.reset();
 	}
 	void onSceneInFinish(int &e){	
-		//if(e==_order_scene) _timer_hint.restart();
+		if(e!=_order_scene) return;
+		for(auto& en:_enable_button) en=true;
 	}
 
 	void setColor(int set_){		

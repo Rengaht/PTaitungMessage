@@ -89,7 +89,7 @@ public:
 	}
 	float valEaseOut(){
 		float t=val();
-		return -(t*t*t*t-1);
+		return -((t=t-1)*t*t*t-1);
 	}
 	float valEaseInOut(){
 		float t=val();		

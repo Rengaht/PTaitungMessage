@@ -12,7 +12,7 @@ public:
 		_order_scene=3;
 
 
-		//ofAddListener(SceneBase::sceneInFinish,this,&SceneName::onSceneInFinish);
+		ofAddListener(SceneBase::sceneInFinish,this,&SceneName::onSceneInFinish);
 
 	}
 	void loadImage(){
@@ -31,6 +31,8 @@ public:
 	
 
 		_button.push_back(ofRectangle(1773,512,51,55));
+		for(int i=0;i<_button.size();++i) _enable_button.push_back(false);
+
 
 		_mlayer=3;
 		_zindex.push_back(0);
@@ -54,7 +56,8 @@ public:
 	}
 
 	void onSceneInFinish(int &e){	
-		//if(e==_order_scene) _timer_hint.restart();
+		if(e!=_order_scene) return;
+		for(auto& en:_enable_button) en=true;
 	}
 
 	void setupTimer(){	

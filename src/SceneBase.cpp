@@ -12,8 +12,7 @@ SceneBase::SceneBase(ofApp *set_ptr){
 }
 void SceneBase::setup(){
 
-	loadImage();
-	
+	loadImage();	
 	setupTimer();
 }
 void SceneBase::setupTimer(){	
@@ -26,7 +25,7 @@ void SceneBase::setupTimer(){
 			_timer_in.push_back(FrameTimer(EaseDue*(1+EaseDistort*(_mlayer-2)),EaseDue*.5+i*EaseDelay));
 			_timer_out.push_back(FrameTimer(EaseDue*(1+EaseDistort*i),EaseDue*.5));
 		}else{
-			_timer_in.push_back(FrameTimer(EaseDue*(1+EaseDistort*i),EaseDue*.5+i*EaseDelay));
+			_timer_in.push_back(FrameTimer(EaseDue*(1+EaseDistort*i+EaseDistort*(_mlayer-2)),EaseDue*.5+i*EaseDelay));
 			_timer_out.push_back(FrameTimer(EaseDue*(1+EaseDistort*i),EaseDue*.5));
 
 		}
@@ -63,11 +62,15 @@ void SceneBase::drawLayer(int i){
 		_img_ui[i].draw(0,0);
 }
 void SceneBase::drawDebugInfo(){	
+
+	if(_status!=SceneStatus::Due) return;
+
 	ofPushStyle();
 	ofSetColor(0,255,0);
 	ofNoFill();
-	for(auto &r:_button){
-		ofDrawRectangle(r);
+	int len=_button.size();
+	for(int i=0;i<len;++i){
+		if(_enable_button[i]) ofDrawRectangle(_button[i]);
 	}
 
 	ofPopStyle();
@@ -83,6 +86,8 @@ void SceneBase::init(){
 	_status=SceneStatus::Init;
 	_trigger_in=false;
 	_trigger_out=false;
+
+	for(auto& en:_enable_button) en=false;
 }
 
 void SceneBase::end(){
@@ -90,6 +95,7 @@ void SceneBase::end(){
 	for(int i=0;i<_mlayer;++i) _timer_out[i].restart();
 	_status=SceneStatus::End;
 
+	for(auto& en:_enable_button) en=false;
 }
 
 void SceneBase::update(float dt_){
@@ -145,12 +151,13 @@ void SceneBase::handleMousePressed(float mouse_x,float mouse_y){
 	_mouse_pos.x=scalex;
 	_mouse_pos.y=scaley;
 
-
 	int len=_button.size();
 	for(int i=0;i<len;++i){
 		if(_button[i].inside(scalex,scaley)){
 			buttonEvent(i);
-			SoundButton.play();	
+			if(_order_scene==4 && i<2){
+				///no soud when recording
+			}else SoundButton.play();	
 		}
 	}
 }
