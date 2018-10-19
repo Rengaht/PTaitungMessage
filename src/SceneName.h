@@ -3,15 +3,17 @@
 #define SCENE_NAME_H
 
 #include "SceneBase.h"
+#include "PTextInput.h"
 
 class SceneName:public SceneBase{
-
+	
+	PTextInput* _input_name;
 public:
 	SceneName(ofApp *set_):SceneBase(set_){
 		setup();
 		_order_scene=3;
 
-
+		_input_name=new PTextInput(1029,674,56,_ptr_app->_keyboard);
 		ofAddListener(SceneBase::sceneInFinish,this,&SceneName::onSceneInFinish);
 
 	}
@@ -42,12 +44,18 @@ public:
 	} 
 	void drawLayer(int i){		
 		if(i==0) ofSetColor(_ptr_app->getSelectColor());		
+		if(i==1){
+			_input_name->draw();			
+		}
 		SceneBase::drawLayer(i);		
+	}
+	void drawDebugInfo(){	
+		SceneBase::drawDebugInfo();
+		_input_name->drawDebug();
 	}
 	void update(float dt_){
 		SceneBase::update(dt_);
-
-		
+		_input_name->update(dt_);		
 	}
 
 	void buttonEvent(int index){
@@ -58,6 +66,7 @@ public:
 	void onSceneInFinish(int &e){	
 		if(e!=_order_scene) return;
 		for(auto& en:_enable_button) en=true;
+		_input_name->setFocus(true);
 	}
 
 	void setupTimer(){	
@@ -75,6 +84,29 @@ public:
 
 			}
 		}
+
+	}
+	void init(){
+		SceneBase::init();		
+		_input_name->reset();
+
+	}
+	void end(){
+		
+		_ptr_app->setUserName(_input_name->getValue());
+		SceneBase::end();
+	}
+	bool handleMousePressed(float mouse_x,float mouse_y){
+		
+		bool b=SceneBase::handleMousePressed(mouse_x,mouse_y);
+
+		if(_input_name->mouseInside(_mouse_pos.x,_mouse_pos.y)){
+			_ptr_app->_show_keyboard=true;
+			b=true;
+			_input_name->setFocus(true);
+		}
+
+		return b;
 
 	}
 };

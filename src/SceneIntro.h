@@ -14,8 +14,8 @@ public:
 		setup();
 		_order_scene=1;
 
-		_hint.push_back(TextRunner(959,435,L"什麼是你最喜歡的台東樣貌？"));
-		_hint.push_back(TextRunner(959,492,L"什麼是你觀察到台東不一樣的地方？"));
+		_hint.push_back(TextRunner(959,435,L"什麼是你最喜歡的臺東樣貌？"));
+		_hint.push_back(TextRunner(959,492,L"什麼是你觀察到臺東不一樣的地方？"));
 		_hint.push_back(TextRunner(959,549,L"我們期待著你在這裡，"));
 		_hint.push_back(TextRunner(959,606,L"留下一些記憶、一些感觸，與自己對話，"));
 		_hint.push_back(TextRunner(959,663,L"將你的感觸保存在臺東吧！"));

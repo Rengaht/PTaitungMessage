@@ -37,7 +37,7 @@ public:
 	void drawScaled(bool debug_=false);
 	virtual void draw();
 	virtual void drawLayer(int i);
-	void drawDebugInfo();
+	virtual void drawDebugInfo();
 
 	list<int> _zindex;
 
@@ -46,7 +46,7 @@ public:
 	virtual void update(float dt_);
 	virtual void reset();
 
-	void handleMousePressed(float mouse_x,float mouse_y);	
+	virtual bool handleMousePressed(float mouse_x,float mouse_y);	
 	virtual void buttonEvent(int index){}
 	ofVec2f _mouse_pos;
 	

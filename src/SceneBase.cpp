@@ -140,11 +140,12 @@ void SceneBase::reset(){
 	}
 }
 
-void SceneBase::handleMousePressed(float mouse_x,float mouse_y){
+bool SceneBase::handleMousePressed(float mouse_x,float mouse_y){
 	
-	if(_status!=SceneStatus::Due) return;
+	//if(_status!=SceneStatus::Due) return;
 
-	
+	bool b=false;
+
 	float scalex=mouse_x/WinScale;
 	float scaley=mouse_y/WinScale;
 
@@ -153,11 +154,16 @@ void SceneBase::handleMousePressed(float mouse_x,float mouse_y){
 
 	int len=_button.size();
 	for(int i=0;i<len;++i){
+		
+		if(!_enable_button[i]) continue;
+
 		if(_button[i].inside(scalex,scaley)){
 			buttonEvent(i);
+			b=true;
 			if(_order_scene==4 && i<2){
 				///no soud when recording
 			}else SoundButton.play();	
 		}
 	}
+	return b;
 }

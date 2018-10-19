@@ -1,0 +1,49 @@
+<LINE>
+	<KEY>!</KEY>
+	<KEY>@</KEY>
+	<KEY>#</KEY>
+	<KEY>$</KEY>
+	<KEY>%</KEY>
+	<KEY>&amp;</KEY>
+	<KEY wid=.5>NULL</KEY>
+	<KEY>1</KEY>
+	<KEY>2</KEY>
+	<KEY>3</KEY>
+	<KEY wid=.5>NULL</KEY>
+	<KEY>BCK</KEY>	
+</LINE>
+<LINE>
+	<KEY>(</KEY>
+	<KEY>)</KEY>
+	<KEY>-</KEY>
+	<KEY>_</KEY>
+	<KEY>=</KEY>
+	<KEY>+</KEY>
+	<KEY wid=.5>NULL</KEY>
+	<KEY>4</KEY>
+	<KEY>5</KEY>
+	<KEY>6</KEY>
+	<KEY wid=.5>NULL</KEY>
+	<KEY hei=2>ENTER</KEY>	
+</LINE>
+<LINE>
+	<KEY>\</KEY>
+	<KEY>;</KEY>
+	<KEY>:</KEY>
+	<KEY>"</KEY>
+	<KEY>*</KEY>
+	<KEY>/</KEY>
+	<KEY wid=.5>NULL</KEY>
+	<KEY>7</KEY>
+	<KEY>8</KEY>
+	<KEY>9</KEY>
+</LINE>
+<LINE>
+	<KEY>abc</KEY>
+	<KEY>LEFT</KEY>
+	<KEY>RIGHT</KEY>
+	<KEY wid=3>SPACE</KEY>
+	<KEY wid=.5>NULL</KEY>
+	<KEY wid=2>0</KEY>
+	<KEY>.</KEY>
+</LINE>

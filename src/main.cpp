@@ -16,6 +16,7 @@ ofxTrueTypeFontUC TextRunner::TextFont;
 int TextRunner::TimePerText=200;
 float TextRunner::CharWid=0;
 
+//PKeyboard ofApp::_keyboard=PKeyboard();
 ofColor ofApp::MainColor[4]={ofColor(219,83,16),ofColor(36,92,169),ofColor(249,249,250),ofColor(157,157,158)};
 
 //========================================================================

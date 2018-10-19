@@ -425,7 +425,7 @@ public:
 				ofVertex(0,0);
 				for(int i=0;i<FFT_NBANDS;++i){
 					//cout<<_ptr_app->_fft_band[i]<<" ";
-					ofVertex(x,-ofClamp(_ptr_app->_fft_band[i]*100,-255,255));
+					ofVertex(x,-ofClamp(_ptr_app->_fft_band[i]*100,-20,200));
 					x+=wid;
 				}
 				//cout<<endl;

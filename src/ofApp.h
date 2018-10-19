@@ -8,9 +8,9 @@
 #include "TextRunner.h"
 #include "SceneBase.h"
 #include "Parameter.h"
+#include "PKeyboard.h"
 
-
-#define DRAW_DEBUG
+//#define DRAW_DEBUG
 
 #define NUM_CHANNELS 1
 #define SAMPLE_RATE 44100
@@ -30,6 +30,7 @@ class ofApp : public ofBaseApp{
 		/* user info */
 		int _select_color;
 		string _path_record;
+		string _user_name,_user_email,_user_phone;
 
 	public:
 
@@ -83,5 +84,14 @@ class ofApp : public ofBaseApp{
 		// for fft
 		void setFFT(bool set_);
 		float* _fft_band;
+
+
+		//keyboard
+		bool _show_keyboard;
+		PKeyboard* _keyboard;
 		
+		void setUserName(string set_);
+		void setUserEmail(string set_);
+		void setUserPhone(string phone_);
+		void saveUserData();
 };

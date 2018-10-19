@@ -1,0 +1,47 @@
+<LINE>
+	<KEY>q</KEY>
+	<KEY>w</KEY>
+	<KEY>e</KEY>
+	<KEY>r</KEY>
+	<KEY>t</KEY>
+	<KEY>y</KEY>
+	<KEY>u</KEY>
+	<KEY>i</KEY>
+	<KEY>o</KEY>
+	<KEY>p</KEY>
+	<KEY wid=2>BCK</KEY>	
+</LINE>
+<LINE dx=0.5>
+	<KEY>a</KEY>
+	<KEY>s</KEY>
+	<KEY>d</KEY>
+	<KEY>f</KEY>
+	<KEY>g</KEY>
+	<KEY>h</KEY>
+	<KEY>j</KEY>
+	<KEY>k</KEY>
+	<KEY>l</KEY>
+	<KEY>'</KEY>
+	<KEY wid=1.5>ENTER</KEY>	
+</LINE>
+<LINE>
+	<KEY>SHIFT</KEY>
+	<KEY>z</KEY>
+	<KEY>x</KEY>
+	<KEY>c</KEY>
+	<KEY>v</KEY>
+	<KEY>b</KEY>
+	<KEY>n</KEY>
+	<KEY>m</KEY>
+	<KEY>,</KEY>
+	<KEY>.</KEY>
+	<KEY>?</KEY>
+	<KEY>SHIFT</KEY>	
+</LINE>
+<LINE dx=1>
+	<KEY>&amp;123</KEY>
+	<KEY>en</KEY>
+	<KEY wid=6>SPACE</KEY>
+	<KEY>LEFT</KEY>
+	<KEY>RIGHT</KEY>
+</LINE>

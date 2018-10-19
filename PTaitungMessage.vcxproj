@@ -114,7 +114,7 @@
       <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);src;..\..\..\addons\ofxBmFFT\src;..\..\..\addons\ofxLibsndfileRecorder\libs;..\..\..\addons\ofxLibsndfileRecorder\libs\libsndfile;..\..\..\addons\ofxLibsndfileRecorder\libs\libsndfile\include;..\..\..\addons\ofxLibsndfileRecorder\libs\libsndfile\lib;..\..\..\addons\ofxLibsndfileRecorder\libs\libsndfile\lib\vs2010;..\..\..\addons\ofxLibsndfileRecorder\src;..\..\..\addons\ofxOsc\libs;..\..\..\addons\ofxOsc\libs\oscpack;..\..\..\addons\ofxOsc\libs\oscpack\src;..\..\..\addons\ofxOsc\libs\oscpack\src\ip;..\..\..\addons\ofxOsc\libs\oscpack\src\ip\posix;..\..\..\addons\ofxOsc\libs\oscpack\src\ip\win32;..\..\..\addons\ofxOsc\libs\oscpack\src\osc;..\..\..\addons\ofxOsc\src;..\..\..\addons\ofxTrueTypeFontUC\src;..\..\..\addons\ofxXmlSettings\libs;..\..\..\addons\ofxXmlSettings\src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);src;src\keyboard;..\..\..\addons\ofxBmFFT\src;..\..\..\addons\ofxLibsndfileRecorder\libs;..\..\..\addons\ofxLibsndfileRecorder\libs\libsndfile;..\..\..\addons\ofxLibsndfileRecorder\libs\libsndfile\include;..\..\..\addons\ofxLibsndfileRecorder\libs\libsndfile\lib;..\..\..\addons\ofxLibsndfileRecorder\libs\libsndfile\lib\vs2010;..\..\..\addons\ofxLibsndfileRecorder\src;..\..\..\addons\ofxOsc\libs;..\..\..\addons\ofxOsc\libs\oscpack;..\..\..\addons\ofxOsc\libs\oscpack\src;..\..\..\addons\ofxOsc\libs\oscpack\src\ip;..\..\..\addons\ofxOsc\libs\oscpack\src\ip\posix;..\..\..\addons\ofxOsc\libs\oscpack\src\ip\win32;..\..\..\addons\ofxOsc\libs\oscpack\src\osc;..\..\..\addons\ofxOsc\src;..\..\..\addons\ofxTrueTypeFontUC\src;..\..\..\addons\ofxXmlSettings\libs;..\..\..\addons\ofxXmlSettings\src;..\..\..\addons\ofxSQLite\src;..\..\..\addons\ofxSQLite\src\lib\sqlite</AdditionalIncludeDirectories>
       <CompileAs>CompileAsCpp</CompileAs>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
@@ -122,8 +122,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
-      <AdditionalDependencies>libsndfile-1.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\..\..\addons\ofxLibsndfileRecorder\libs\libsndfile\lib\vs2010;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libsndfile-1.lib;sqlite3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\..\addons\ofxLibsndfileRecorder\libs\libsndfile\lib\vs2010;..\..\..\addons\ofxSQLite\src\lib\sqlite\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent />
   </ItemDefinitionGroup>
@@ -155,7 +155,7 @@
       <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);src;..\..\..\addons\ofxBmFFT\src;..\..\..\addons\ofxLibsndfileRecorder\libs;..\..\..\addons\ofxLibsndfileRecorder\libs\libsndfile;..\..\..\addons\ofxLibsndfileRecorder\libs\libsndfile\include;..\..\..\addons\ofxLibsndfileRecorder\libs\libsndfile\lib;..\..\..\addons\ofxLibsndfileRecorder\libs\libsndfile\lib\vs2010;..\..\..\addons\ofxLibsndfileRecorder\src;..\..\..\addons\ofxOsc\libs;..\..\..\addons\ofxOsc\libs\oscpack;..\..\..\addons\ofxOsc\libs\oscpack\src;..\..\..\addons\ofxOsc\libs\oscpack\src\ip;..\..\..\addons\ofxOsc\libs\oscpack\src\ip\posix;..\..\..\addons\ofxOsc\libs\oscpack\src\ip\win32;..\..\..\addons\ofxOsc\libs\oscpack\src\osc;..\..\..\addons\ofxOsc\src;..\..\..\addons\ofxTrueTypeFontUC\src;..\..\..\addons\ofxXmlSettings\libs;..\..\..\addons\ofxXmlSettings\src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);src;src\keyboard;..\..\..\addons\ofxBmFFT\src;..\..\..\addons\ofxLibsndfileRecorder\libs;..\..\..\addons\ofxLibsndfileRecorder\libs\libsndfile;..\..\..\addons\ofxLibsndfileRecorder\libs\libsndfile\include;..\..\..\addons\ofxLibsndfileRecorder\libs\libsndfile\lib;..\..\..\addons\ofxLibsndfileRecorder\libs\libsndfile\lib\vs2010;..\..\..\addons\ofxLibsndfileRecorder\src;..\..\..\addons\ofxOsc\libs;..\..\..\addons\ofxOsc\libs\oscpack;..\..\..\addons\ofxOsc\libs\oscpack\src;..\..\..\addons\ofxOsc\libs\oscpack\src\ip;..\..\..\addons\ofxOsc\libs\oscpack\src\ip\posix;..\..\..\addons\ofxOsc\libs\oscpack\src\ip\win32;..\..\..\addons\ofxOsc\libs\oscpack\src\osc;..\..\..\addons\ofxOsc\src;..\..\..\addons\ofxTrueTypeFontUC\src;..\..\..\addons\ofxXmlSettings\libs;..\..\..\addons\ofxXmlSettings\src;..\..\..\addons\ofxSQLite\src;..\..\..\addons\ofxSQLite\src\lib\sqlite</AdditionalIncludeDirectories>
       <CompileAs>CompileAsCpp</CompileAs>
     </ClCompile>
     <Link>
@@ -165,12 +165,21 @@
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
-      <AdditionalDependencies>libsndfile-1.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>..\..\..\addons\ofxLibsndfileRecorder\libs\libsndfile\lib\vs2010;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libsndfile-1.lib;sqlite3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\..\addons\ofxLibsndfileRecorder\libs\libsndfile\lib\vs2010;..\..\..\addons\ofxSQLite\src\lib\sqlite\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent />
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\addons\ofxSQLite\src\ofxSQLite.cpp" />
+    <ClCompile Include="..\..\..\addons\ofxSQLite\src\ofxSQLiteAbstract.cpp" />
+    <ClCompile Include="..\..\..\addons\ofxSQLite\src\ofxSQLiteDelete.cpp" />
+    <ClCompile Include="..\..\..\addons\ofxSQLite\src\ofxSQLiteFieldValues.cpp" />
+    <ClCompile Include="..\..\..\addons\ofxSQLite\src\ofxSQLiteInsert.cpp" />
+    <ClCompile Include="..\..\..\addons\ofxSQLite\src\ofxSQLiteSelect.cpp" />
+    <ClCompile Include="..\..\..\addons\ofxSQLite\src\ofxSQLiteSimpler.cpp" />
+    <ClCompile Include="..\..\..\addons\ofxSQLite\src\ofxSQLiteUpdate.cpp" />
+    <ClCompile Include="src\keyboard\PKeyboard.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\ofApp.cpp" />
     <ClCompile Include="src\SceneBase.cpp" />
@@ -196,6 +205,22 @@
     <ClCompile Include="..\..\..\addons\ofxXmlSettings\libs\tinyxmlparser.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\addons\ofxSQLite\src\lib\sqlite\sqlite3.h" />
+    <ClInclude Include="..\..\..\addons\ofxSQLite\src\ofxSQLite.h" />
+    <ClInclude Include="..\..\..\addons\ofxSQLite\src\ofxSQLiteAbstract.h" />
+    <ClInclude Include="..\..\..\addons\ofxSQLite\src\ofxSQLiteDelete.h" />
+    <ClInclude Include="..\..\..\addons\ofxSQLite\src\ofxSQLiteFieldValues.h" />
+    <ClInclude Include="..\..\..\addons\ofxSQLite\src\ofxSQLiteHeaders.h" />
+    <ClInclude Include="..\..\..\addons\ofxSQLite\src\ofxSQLiteInsert.h" />
+    <ClInclude Include="..\..\..\addons\ofxSQLite\src\ofxSQLiteSelect.h" />
+    <ClInclude Include="..\..\..\addons\ofxSQLite\src\ofxSQLiteSimpler.h" />
+    <ClInclude Include="..\..\..\addons\ofxSQLite\src\ofxSQLiteType.h" />
+    <ClInclude Include="..\..\..\addons\ofxSQLite\src\ofxSQLiteTypeNow.h" />
+    <ClInclude Include="..\..\..\addons\ofxSQLite\src\ofxSQLiteUpdate.h" />
+    <ClInclude Include="..\..\..\addons\ofxSQLite\src\ofxSQLiteWhere.h" />
+    <ClInclude Include="src\keyboard\PDatabase.h" />
+    <ClInclude Include="src\keyboard\PKeyboard.h" />
+    <ClInclude Include="src\keyboard\PTextInput.h" />
     <ClInclude Include="src\ofApp.h" />
     <ClInclude Include="src\FrameTimer.h" />
     <ClInclude Include="src\Parameter.h" />

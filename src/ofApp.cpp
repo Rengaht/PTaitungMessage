@@ -19,6 +19,7 @@ void ofApp::setup(){
 	//_sound_stream.setDevice(_sound_stream.getDeviceList()[1]);
 	_sound_stream.setup(this, 0, NUM_CHANNELS, SAMPLE_RATE, BUFFER_SIZE, 4);
 	_fft_band=new float[FFT_NBANDS];
+	for(int i=0;i<FFT_NBANDS;++i) _fft_band[i]=0;
 
 	_param=new Param();
 	_now_millis=ofGetElapsedTimeMillis();
@@ -32,12 +33,16 @@ void ofApp::setup(){
 	_img_back.loadImage("ui/back.png");
 	_img_back.getTextureReference().setTextureWrap(GL_MIRRORED_REPEAT,GL_MIRRORED_REPEAT);
 	
+	_show_keyboard=false;
+	_keyboard=new PKeyboard(ofVec2f(450,720),ofVec2f(1020,340),18);
+
+
 	loadScene();
 	/*_mode=PEMPTY;
 	setScene(PStatus::PHOME);*/
 
 	_mode_pre=PEMPTY;
-	_mode=PHOME;
+	_mode=PINFO;
 	_scene[_mode]->init();
 
 	_mesh_back.addVertex(ofVec2f(0,0));
@@ -55,7 +60,6 @@ void ofApp::setup(){
 	_mesh_back.addTexCoord(ofVec2f(1,1));
 	_mesh_back.addTexCoord(ofVec2f(0,1));
 	_mesh_back.addTexCoord(ofVec2f(0,0));
-
 
 	ofAddListener(SceneBase::sceneInFinish,this,&ofApp::onSceneInFinish);
 	ofAddListener(SceneBase::sceneOutFinish,this,&ofApp::onSceneOutFinish);
@@ -84,7 +88,7 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-	ofSetBackgroundColor(255);
+	ofSetBackgroundColor(0);
 	ofEnableAlphaBlending();
 
 	ofEnableNormalizedTexCoords();
@@ -106,11 +110,27 @@ void ofApp::draw(){
 
 
 #ifdef DRAW_DEBUG
+	
 	_scene[_mode]->drawScaled(true);
+
 	ofDrawBitmapString("fps= "+ofToString(ofGetFrameRate()),10,10);
+	if(_show_keyboard){
+		ofPushMatrix();
+		ofScale(SceneBase::WinScale,SceneBase::WinScale);
+			_keyboard->draw(true);
+		ofPopMatrix();
+	}
 #else
 	_scene[_mode]->drawScaled(false);
+	if(_show_keyboard){
+		ofPushMatrix();
+		ofScale(SceneBase::WinScale,SceneBase::WinScale);
+			_keyboard->draw();
+		ofPopMatrix();
+	}	
 #endif
+	
+
 	
 }
 
@@ -129,7 +149,11 @@ void ofApp::keyReleased(int key){
 
 //--------------------------------------------------------------
 void ofApp::mouseReleased(int x, int y, int button){
-	_scene[_mode]->handleMousePressed(x,y);
+	bool trigger_=_scene[_mode]->handleMousePressed(x,y);
+	if(_show_keyboard){
+		bool ktrigger_=_keyboard->checkMouse(ofPoint(x/SceneBase::WinScale,y/SceneBase::WinScale));
+		if(!trigger_ && !ktrigger_) _show_keyboard=false;
+	}
 }
 
 
@@ -160,12 +184,19 @@ void ofApp::setScene(PStatus set_){
 	
 
 	_mode_pre=_mode;
+	
+
+
 	_mode=set_;
 
 	if(_mode_pre!=PEMPTY) _scene[_mode_pre]->end();
+	if(_mode_pre==PINFO){
+		saveUserData();
+	}
 	
 	_scene[_mode]->init();
-
+	_show_keyboard=false;
+	_keyboard->setLanguage(PKeyboard::PLANGUAGE::EN);
 
 	_in_transition=true;
 
@@ -251,4 +282,24 @@ void ofApp::playRecord(){
 
 void ofApp::setFFT(bool set_){
 	_fft=set_;
+}
+
+
+void ofApp::setUserName(string set_){
+	_user_name=set_;
+}
+void ofApp::setUserEmail(string set_){
+	_user_email=set_;
+}
+void ofApp::setUserPhone(string set_){
+	_user_phone=set_;
+}
+void ofApp::saveUserData(){
+
+
+	cout<<"save data:"<<endl
+		<<"user= "<<_user_name<<endl
+		<<"email= "<<_user_email<<endl
+		<<"phone= "<<_user_phone<<endl;
+
 }

@@ -93,6 +93,9 @@ public:
 	}
 	float valEaseInOut(){
 		float t=val();		
+		return valEaseInOut(t);
+	}
+	float valEaseInOut(float t){
 		if(t<0){
 			//ofLog()<<t<<"  "<<0;
 			return 0;
@@ -106,15 +109,13 @@ public:
 
 	}
 	float valFade(){
-		float d_=.05;
+		
 		float p=val();
-		if(p<d_){
-			return sin(p/d_*HALF_PI);
-		}else if(p>1.0-d_){
-			return 1.0-sin((p-(1.0-d_))/d_*HALF_PI);
-		}else{
-			return 1;
-		}
+		p/=0.5;
+
+		if(p<1) return valEaseInOut(p);
+		else return 1.0-valEaseInOut(p-1);
+
 	}
 	bool isStart(){
 		return started;
