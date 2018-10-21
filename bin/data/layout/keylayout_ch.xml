@@ -52,7 +52,7 @@
 	<KEY sign="ou">ㄡ</KEY>
 	<KEY sign="eng">ㄥ</KEY>	
 	
-
+	<KEY wid=.5>NULL</KEY>
 	<KEY wid=1>LEFT</KEY>
 	<KEY wid=1>RIGHT</KEY>
 </LINE>

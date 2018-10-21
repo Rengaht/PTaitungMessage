@@ -161,7 +161,9 @@ void ofApp::mouseReleased(int x, int y, int button){
 	bool trigger_=_scene[_mode]->handleMousePressed(x,y);
 	if(_show_keyboard){
 		bool ktrigger_=_keyboard->checkMouse(ofPoint(x/SceneBase::WinScale,y/SceneBase::WinScale));
-		if(!trigger_ && !ktrigger_) _show_keyboard=false;
+		if(!trigger_ && !ktrigger_){
+			_show_keyboard=false;
+		}
 	}
 }
 

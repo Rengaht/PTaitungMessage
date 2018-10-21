@@ -15,6 +15,9 @@ class PTextInput{
 	wstring _wstr;
 	//string _str;
 	int _cursor;
+	wstring _wstr_spelling;
+	int _cursor_spelling;
+
 
 	int _max_text;
 
@@ -39,6 +42,7 @@ public:
 		_timer_blink.setContinuous(true);
 
 		ofAddListener(kb_->_event_input,this,&PTextInput::onInputUpdate);		
+		ofAddListener(kb_->_event_spelling,this,&PTextInput::onSpellingUpdate);		
 		ofAddListener(kb_->_event_back,this,&PTextInput::onkeyBack);
 		ofAddListener(kb_->_event_enter,this,&PTextInput::onKeyEnter);
 		ofAddListener(kb_->_event_left,this,&PTextInput::onKeyLeft);
@@ -55,8 +59,9 @@ public:
 	void reset(){
 		//_str.clear();
 		_wstr.clear();
-		
-		_cursor=0;
+		_wstr_spelling.clear();
+
+		_cursor=_cursor_spelling=0;
 		_focus=false;
 
 	}
@@ -104,11 +109,31 @@ public:
 
 		if(_wstr.size()>=_max_text) return;
 
-		//_str+=set_;
-		_wstr+=ws;
-		/*_str.insert(_cursor,ws);
-		_cursor++;*/
+		_wstr.insert(_cursor,ws);
 		_cursor++;
+		_cursor_spelling=_cursor;
+
+		if(_wstr.size()==0) _rect=ofRectangle(_pos.x,_pos.y,_font_size*_max_text/3,_font_size);
+		else _rect=Font.getStringBoundingBox(Param::ws2utf8(_wstr),_pos.x,_pos.y);
+	}
+	void onSpellingUpdate(string& set_){
+
+		if(!_focus) return;
+
+		wstring ws=Param::utf82ws(set_);
+
+		_wstr.erase(_cursor_spelling,_wstr_spelling.size());
+		_cursor=_cursor_spelling;
+
+		_wstr_spelling=ws;
+
+		if(ws.size()>0){
+			_wstr.insert(_cursor,ws);
+			_cursor_spelling=_cursor;
+			_cursor+=ws.size();
+		}else{
+			_cursor_spelling=_cursor;
+		}
 
 		if(_wstr.size()==0) _rect=ofRectangle(_pos.x,_pos.y,_font_size*_max_text/3,_font_size);
 		else _rect=Font.getStringBoundingBox(Param::ws2utf8(_wstr),_pos.x,_pos.y);
@@ -122,16 +147,24 @@ public:
 	void onKeyLeft(int& e){
 		if(!_focus) return;
 		_cursor=ofClamp(_cursor-1,0,_wstr.length());
+		
+		if(_wstr_spelling.size()==0) _cursor_spelling=_cursor;
 	}
 	void onKeyRight(int& e){
 		if(!_focus) return;
 		_cursor=ofClamp(_cursor+1,0,_wstr.length());
+
+		if(_wstr_spelling.size()==0) _cursor_spelling=_cursor;
 	}
 	void onkeyBack(int &e){
 		if(!_focus) return;
 		if(_cursor>0){
 			_wstr.erase(_cursor-1,1);
 			_cursor--;
+			if(_wstr_spelling.size()==0) _cursor_spelling=_cursor;
+			else{
+				//TODO!!!			
+			}
 		}
 	}
 	bool mouseInside(float mousex,float mousey){

@@ -14,6 +14,7 @@
 class PKey{
 	ofRectangle _rect;
 	ofRectangle _rect_word;
+	ofImage _img_icon;
 public:
 	string _key;
 	string _word;
@@ -37,7 +38,10 @@ public:
 		wstring ws=Param::utf82ws(_word);
 		_u8s=Param::ws2utf8(ws);
 	}
-
+	void setImage(string img_path){
+		_img_icon.loadImage(img_path);
+		_rect_word=ofRectangle(0,0,Font.getFontSize()*1.5,Font.getFontSize()*1.5);
+	}
 	void draw(){
 		ofPushMatrix();
 		ofTranslate(_rect.position);
@@ -48,11 +52,16 @@ public:
 		ofDrawRectangle(0,0,_rect.width,_rect.height);			
 		ofPopStyle();
 
-		ofPushStyle();
-		ofSetColor(255);
-			Font.drawString(_u8s,_rect.width/2-_rect_word.width/2,_rect.height/2+_rect_word.height/2);
-		ofPopStyle();
-
+		if(_img_icon.bAllocated()){
+			_img_icon.draw(_rect.width/2-_rect_word.width/2,_rect.height/2-_rect_word.height/2,
+							_rect_word.width,_rect_word.height);
+		
+		}else{
+			ofPushStyle();
+			ofSetColor(255);
+				Font.drawString(_u8s,_rect.width/2-_rect_word.width/2,_rect.height/2+_rect_word.height/2);
+			ofPopStyle();
+		}
 		ofPopMatrix();
 	}
 	bool inside(ofPoint pt_){
@@ -71,13 +80,14 @@ private:
 	list<PKey>* _key;
 	
 	list<PKey> _select;
+	bool _show_select;
 
 public:
 	enum PLANGUAGE {EN,ENCAP,CHINESE,NUMBER};
 	PLANGUAGE _language;
 	void setLanguage(PLANGUAGE set_);
 
-	ofEvent<string> _event_input,_event_hint;
+	ofEvent<string> _event_input,_event_spelling;
 	ofEvent<int> _event_enter,_event_back,_event_left,_event_right;
 
 	ofVec2f _pos,_size;		
@@ -90,16 +100,17 @@ public:
 	void draw(bool debug_=false);
 	void drawDebug();
 	bool checkMouse(ofPoint pt_);
-	string str_;
 	bool mouseInside(float mousex,float mousey);
 	void keyEvent(PKey& key_);
 	void keyEventP(PKey& key_);
 	
-	string _str_complex;
-	string _utf8_complex;
+	string _str_spelling;
+	string _utf8_spelling;
 	
 
 	int _index_select;
+
+
 
 };
 
