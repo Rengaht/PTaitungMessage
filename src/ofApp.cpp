@@ -22,6 +22,12 @@ void ofApp::setup(){
 	for(int i=0;i<FFT_NBANDS;++i) _fft_band[i]=0;
 
 	_param=new Param();
+
+	//read csv
+	_csv_user_output.load(Param::val()->_csv_record);
+	ofLog()<<"load csv data with "<<_csv_user_output.getNumRows()<<" rows!";
+
+
 	_now_millis=ofGetElapsedTimeMillis();
 
 	SceneBase::WinScale=max(ofGetWidth()/1920.0,ofGetHeight()/1080.0);
@@ -42,7 +48,7 @@ void ofApp::setup(){
 	setScene(PStatus::PHOME);*/
 
 	_mode_pre=PEMPTY;
-	_mode=PINFO;
+	_mode=PNAME;
 	_scene[_mode]->init();
 
 	_mesh_back.addVertex(ofVec2f(0,0));
@@ -144,6 +150,9 @@ void ofApp::keyReleased(int key){
 		case 'f':
 			ofToggleFullscreen();
 			break;
+		case 'g':
+			PDatabase::generate();
+			break;
 	}
 }
 
@@ -214,7 +223,9 @@ void ofApp::setRecording(bool set_){
 	
 	if(set_){
 		ofLog()<<"Start recording\n";
-		string pt=_param->_folder_export+ofGetTimestampString("%Y%m%d%H%M%S")+".wav";
+
+		_user_id=ofGetTimestampString("%Y%m%d%H%M%S");
+		string pt=_param->_folder_export+_user_id+".wav";
 
 		cout << pt<<"----\n";
 		_recorder.setup(pt,SAMPLE_RATE,NUM_CHANNELS);
@@ -295,11 +306,21 @@ void ofApp::setUserPhone(string set_){
 	_user_phone=set_;
 }
 void ofApp::saveUserData(){
-
+	
+	ofxCsvRow row_;
+	row_.addString(_user_id);
+	row_.addInt(_select_color);
+	row_.addString(_user_name);
+	row_.addString(_user_email);
+	row_.addString(_user_phone);
 
 	cout<<"save data:"<<endl
+		<<"id= "<<_user_id<<endl
 		<<"user= "<<_user_name<<endl
 		<<"email= "<<_user_email<<endl
 		<<"phone= "<<_user_phone<<endl;
+
+	_csv_user_output.addRow(row_);
+	_csv_user_output.save();
 
 }

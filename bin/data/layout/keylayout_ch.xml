@@ -1,0 +1,58 @@
+<LINE dx=0>
+	<KEY sign="b">ㄅ</KEY>
+	<KEY sign="d">ㄉ</KEY>
+	<KEY sign="3">ˇ</KEY>
+	<KEY sign="4">ˋ</KEY>
+	<KEY sign="jr">ㄓ</KEY>
+	<KEY sign="2">ˊ</KEY>
+	<KEY sign="5">˙</KEY>
+	<KEY sign="a">ㄚ</KEY>
+	<KEY sign="ai">ㄞ</KEY>
+	<KEY sign="an">ㄢ</KEY>
+	<KEY sign="er">ㄦ</KEY>
+	<KEY>BCK</KEY>	
+</LINE>
+<LINE dx=.5>
+	<KEY sign="p">ㄆ</KEY>
+	<KEY sign="t">ㄊ</KEY>
+	<KEY sign="g">ㄍ</KEY>
+	<KEY sign="j">ㄐ</KEY>
+	<KEY sign="chr">ㄔ</KEY>
+	<KEY sign="tz">ㄗ</KEY>
+	<KEY sign="yi">ㄧ</KEY>
+	<KEY sign="o">ㄛ</KEY>
+	<KEY sign="ei">ㄟ</KEY>
+	<KEY sign="en">ㄣ</KEY>	
+	<KEY wid=1.5>ENTER</KEY>
+</LINE>
+<LINE dx=1>
+	<KEY sign="m">ㄇ</KEY>
+	<KEY sign="n">ㄋ</KEY>
+	<KEY sign="k">ㄎ</KEY>
+	<KEY sign="ch">ㄑ</KEY>
+	<KEY sign="shr">ㄕ</KEY>
+	<KEY sign="tsz">ㄘ</KEY>
+	<KEY sign="wu">ㄨ</KEY>
+	<KEY sign="e">ㄜ</KEY>
+	<KEY sign="qu">ㄠ</KEY>
+	<KEY sign="ang">ㄤ</KEY>
+	<KEY wid=1>SPACE</KEY>	
+</LINE>
+<LINE>
+	<KEY>&amp;123</KEY>
+	<KEY>LAN</KEY>
+	<KEY sign="f">ㄈ</KEY>
+	<KEY sign="l">ㄌ</KEY>
+	<KEY sign="h">ㄏ</KEY>
+	<KEY sign="sh">ㄒ</KEY>
+	<KEY sign="r">ㄖ</KEY>
+	<KEY sign="sz">ㄙ</KEY>
+	<KEY sign="yu">ㄩ</KEY>
+	<KEY sign="eh">ㄝ</KEY>
+	<KEY sign="ou">ㄡ</KEY>
+	<KEY sign="eng">ㄥ</KEY>	
+	
+
+	<KEY wid=1>LEFT</KEY>
+	<KEY wid=1>RIGHT</KEY>
+</LINE>

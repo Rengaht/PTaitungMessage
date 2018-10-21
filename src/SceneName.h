@@ -15,7 +15,7 @@ public:
 
 		_input_name=new PTextInput(1029,674,56,_ptr_app->_keyboard);
 		ofAddListener(SceneBase::sceneInFinish,this,&SceneName::onSceneInFinish);
-
+		ofAddListener(_input_name->_event_enter,this,&SceneName::onNameEnter);
 	}
 	void loadImage(){
 
@@ -56,16 +56,17 @@ public:
 	void update(float dt_){
 		SceneBase::update(dt_);
 		_input_name->update(dt_);		
+		if(_input_name->getValue().size()>0)_enable_button[0]=true; 
+		else _enable_button[0]=false;
 	}
 
 	void buttonEvent(int index){
-		_ptr_app->setScene(ofApp::PStatus::PRECORD);
+		if(index==0) _ptr_app->setScene(ofApp::PStatus::PRECORD);
 
 	}
 
 	void onSceneInFinish(int &e){	
-		if(e!=_order_scene) return;
-		for(auto& en:_enable_button) en=true;
+		if(e!=_order_scene) return;		
 		_input_name->setFocus(true);
 	}
 
@@ -101,6 +102,7 @@ public:
 		bool b=SceneBase::handleMousePressed(mouse_x,mouse_y);
 
 		if(_input_name->mouseInside(_mouse_pos.x,_mouse_pos.y)){
+			_ptr_app->_keyboard->setLanguage(PKeyboard::PLANGUAGE::CHINESE);
 			_ptr_app->_show_keyboard=true;
 			b=true;
 			_input_name->setFocus(true);
@@ -108,6 +110,9 @@ public:
 
 		return b;
 
+	}
+	void onNameEnter(int& e){
+		_ptr_app->setScene(ofApp::PStatus::PRECORD);
 	}
 };
 

@@ -3,6 +3,7 @@
 #include "ofMain.h"
 #include "ofxLibsndFileRecorder.h"
 #include "bmFFT.h"
+#include "ofxCsv.h"
 
 #include "FrameTimer.h"
 #include "TextRunner.h"
@@ -10,7 +11,7 @@
 #include "Parameter.h"
 #include "PKeyboard.h"
 
-//#define DRAW_DEBUG
+#define DRAW_DEBUG
 
 #define NUM_CHANNELS 1
 #define SAMPLE_RATE 44100
@@ -30,6 +31,7 @@ class ofApp : public ofBaseApp{
 		/* user info */
 		int _select_color;
 		string _path_record;
+		string _user_id;
 		string _user_name,_user_email,_user_phone;
 
 	public:
@@ -93,5 +95,9 @@ class ofApp : public ofBaseApp{
 		void setUserName(string set_);
 		void setUserEmail(string set_);
 		void setUserPhone(string phone_);
+		
+
+		// for output
+		ofxCsv _csv_user_output;
 		void saveUserData();
 };

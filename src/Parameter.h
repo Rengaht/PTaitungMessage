@@ -1,10 +1,12 @@
-#pragma once
+﻿#pragma once
 #ifndef PARMAMETR_H
 #define PARAMETER_H
 
 #include <codecvt>
+
 #include "ofMain.h"
 #include "ofxXmlSettings.h"
+
 
 class Param{
 
@@ -16,6 +18,8 @@ public:
 	
 	string _folder_export;
 	string _name_export;
+	string _csv_record;
+	
 	vector<wstring> _question;
 	int _index_question;
 
@@ -23,6 +27,8 @@ public:
 
 	float _spectrum_scale;
 	float _spectrum_size;
+
+	
 
 	Param(){
 		readParam();
@@ -57,6 +63,7 @@ public:
         
 		_folder_export=_param.getValue("FOLDER_EXPORT","");
 		_name_export=_param.getValue("NAME_EXPORT","");
+		_csv_record=_param.getValue("CSV_RECORD","");
 
 		_time_record=_param.getValue("TIME_RECORD",0);
 		_spectrum_scale=_param.getValue("SPECTRUM_SCALE",500000.0);
@@ -69,17 +76,36 @@ public:
 	static string ws2utf8(std::wstring &input){
 		/*std::wstring_convert<std::codecvt_utf8<wchar_t>> utf8conv;
 		return utf8conv.to_bytes(input);*/
-
-		static std::locale loc("");
-		auto &facet = std::use_facet<std::codecvt<wchar_t, char, std::mbstate_t>>(loc);
-		return std::wstring_convert<std::remove_reference<decltype(facet)>::type, wchar_t>(&facet).to_bytes(input);
-
+		try{
+			static std::locale loc("");
+			auto &facet = std::use_facet<std::codecvt<wchar_t, char, std::mbstate_t>>(loc);
+			return std::wstring_convert<std::remove_reference<decltype(facet)>::type, wchar_t>(&facet).to_bytes(input);
+		}catch(exception& e){
+			ofLog(ofLogLevel::OF_LOG_WARNING,e.what());
+		}
+		return "";
 	}
 
 	static wstring utf82ws(std::string &input)
 	{
-		std::wstring_convert<std::codecvt_utf8<wchar_t>> utf8conv;
-		return utf8conv.from_bytes(input);
+		try{
+			std::wstring_convert<std::codecvt_utf8<wchar_t>> utf8conv;
+			return utf8conv.from_bytes(input);
+		}catch(exception& e){
+			ofLog(ofLogLevel::OF_LOG_WARNING,e.what());
+		}
+		return wstring();
+	}
+	static u16string utf82u16(string &input){
+		/*std::wstring_convert<std::codecvt<char16_t,char,std::mbstate_t>,char16_t> convert;
+		std::u16string u16 = convert.from_bytes(input);
+		return u16;*/
+
+		std::wstring_convert<std::codecvt_utf8_utf16<int16_t>, int16_t> convert;
+		//auto p = reinterpret_cast<const int16_t *>(input.data());
+		auto cnv=convert.from_bytes(input.data());
+		auto u16=reinterpret_cast<const char16_t*>(cnv.data());
+		return u16;
 	}
 
 	void saveParameterFile(){
@@ -94,6 +120,7 @@ public:
 		
 		_param.setValue("FOLDER_EXPORT",_folder_export);
 		_param.setValue("NAME_EXPORT",_name_export);
+		_param.setValue("CSV_RECORD",_csv_record);
 
 		_param.setValue("TIME_RECORD",_time_record);
 		_param.setValue("SPECTRUM_SIZE",_spectrum_size);
@@ -110,7 +137,7 @@ public:
 
 		return _question[_index_question];
 	}
-
+	
 };
 
 

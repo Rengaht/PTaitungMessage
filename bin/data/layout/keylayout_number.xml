@@ -1,49 +1,32 @@
-<LINE>
-	<KEY>!</KEY>
-	<KEY>@</KEY>
-	<KEY>#</KEY>
-	<KEY>$</KEY>
-	<KEY>%</KEY>
-	<KEY>&amp;</KEY>
-	<KEY wid=.5>NULL</KEY>
-	<KEY>1</KEY>
-	<KEY>2</KEY>
-	<KEY>3</KEY>
-	<KEY wid=.5>NULL</KEY>
-	<KEY>BCK</KEY>	
-</LINE>
-<LINE>
+<LINE dx=2>
+	<KEY wid=2>1</KEY>
+	<KEY wid=2>2</KEY>
+	<KEY wid=2>3</KEY>
 	<KEY>(</KEY>
 	<KEY>)</KEY>
+	<KEY wid=1.5>BCK</KEY>	
+</LINE>
+<LINE dx=2>
+	<KEY wid=2>4</KEY>
+	<KEY wid=2>5</KEY>
+	<KEY wid=2>6</KEY>
 	<KEY>-</KEY>
-	<KEY>_</KEY>
-	<KEY>=</KEY>
-	<KEY>+</KEY>
-	<KEY wid=.5>NULL</KEY>
-	<KEY>4</KEY>
-	<KEY>5</KEY>
-	<KEY>6</KEY>
-	<KEY wid=.5>NULL</KEY>
-	<KEY hei=2>ENTER</KEY>	
+	<KEY>+</KEY>	
+	<KEY wid=1.5 hei=2>ENTER</KEY>	
 </LINE>
-<LINE>
-	<KEY>\</KEY>
-	<KEY>;</KEY>
-	<KEY>:</KEY>
-	<KEY>"</KEY>
-	<KEY>*</KEY>
-	<KEY>/</KEY>
-	<KEY wid=.5>NULL</KEY>
-	<KEY>7</KEY>
-	<KEY>8</KEY>
-	<KEY>9</KEY>
-</LINE>
-<LINE>
-	<KEY>abc</KEY>
+<LINE dx=2>
+	<KEY wid=2>7</KEY>
+	<KEY wid=2>8</KEY>
+	<KEY wid=2>9</KEY>
 	<KEY>LEFT</KEY>
 	<KEY>RIGHT</KEY>
-	<KEY wid=3>SPACE</KEY>
-	<KEY wid=.5>NULL</KEY>
+	
+</LINE>
+<LINE dx=0>
+	<KEY>abc</KEY>		
+	<KEY>LAN</KEY>
+	<KEY wid=2>*</KEY>
 	<KEY wid=2>0</KEY>
-	<KEY>.</KEY>
+	<KEY wid=2>#</KEY>
+	<KEY wid=3.5>SPACE</KEY>		
 </LINE>

@@ -18,7 +18,8 @@ public:
 		_input_phone=new PTextInput(1029,653,24,_ptr_app->_keyboard,20,"font/GothamHTF-Book.ttf");
 
 		ofAddListener(SceneBase::sceneInFinish,this,&SceneInfo::onSceneInFinish);
-
+		ofAddListener(_input_email->_event_enter,this,&SceneInfo::onEmailEnter);
+		ofAddListener(_input_phone->_event_enter,this,&SceneInfo::onPhoneEnter);
 	}
 	void loadImage(){
 		ofImage obj_;
@@ -66,7 +67,6 @@ public:
 		_ptr_app->setScene(ofApp::PStatus::PHOME);
 
 	}
-
 	void onSceneInFinish(int &e){	
 		if(e!=_order_scene) return;
 		for(auto& en:_enable_button) en=true;				
@@ -125,6 +125,16 @@ public:
 		return b;
 
 	}
+	void onEmailEnter(int& e){
+		_input_email->setFocus(false);
+		
+		_ptr_app->_keyboard->setLanguage(PKeyboard::PLANGUAGE::NUMBER);
+		_input_phone->setFocus(true);
+	}
+	void onPhoneEnter(int& e){
+		_ptr_app->_show_keyboard=false;
+	}
+
 };
 
 

@@ -76,32 +76,14 @@
     <ClCompile Include="src\SceneBase.cpp">
       <Filter>src\scene\basic</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\addons\ofxSQLite\src\ofxSQLiteDelete.cpp">
-      <Filter>addons\ofxSQLite</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\addons\ofxSQLite\src\ofxSQLiteFieldValues.cpp">
-      <Filter>addons\ofxSQLite</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\addons\ofxSQLite\src\ofxSQLiteInsert.cpp">
-      <Filter>addons\ofxSQLite</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\addons\ofxSQLite\src\ofxSQLiteSelect.cpp">
-      <Filter>addons\ofxSQLite</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\addons\ofxSQLite\src\ofxSQLiteSimpler.cpp">
-      <Filter>addons\ofxSQLite</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\addons\ofxSQLite\src\ofxSQLiteUpdate.cpp">
-      <Filter>addons\ofxSQLite</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\addons\ofxSQLite\src\ofxSQLite.cpp">
-      <Filter>addons\ofxSQLite</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\addons\ofxSQLite\src\ofxSQLiteAbstract.cpp">
-      <Filter>addons\ofxSQLite</Filter>
-    </ClCompile>
     <ClCompile Include="src\keyboard\PKeyboard.cpp">
       <Filter>src\keyboard</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxCsv\src\ofxCsv.cpp">
+      <Filter>addons\ofxCsv</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxCsv\src\ofxCsvRow.cpp">
+      <Filter>addons\ofxCsv</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -183,8 +165,8 @@
     <Filter Include="src\keyboard">
       <UniqueIdentifier>{6de50585-d59f-4747-b64f-02a3931da1c9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="addons\ofxSQLite">
-      <UniqueIdentifier>{3034bf69-8818-46ab-bd5d-e1d4a3c00130}</UniqueIdentifier>
+    <Filter Include="addons\ofxCsv">
+      <UniqueIdentifier>{df8deffd-07ff-4277-a07a-3f359840f63b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -311,45 +293,6 @@
     <ClInclude Include="src\SceneBase.h">
       <Filter>src\scene\basic</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\addons\ofxSQLite\src\ofxSQLiteAbstract.h">
-      <Filter>addons\ofxSQLite</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\addons\ofxSQLite\src\ofxSQLiteDelete.h">
-      <Filter>addons\ofxSQLite</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\addons\ofxSQLite\src\ofxSQLiteFieldValues.h">
-      <Filter>addons\ofxSQLite</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\addons\ofxSQLite\src\ofxSQLiteHeaders.h">
-      <Filter>addons\ofxSQLite</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\addons\ofxSQLite\src\ofxSQLiteInsert.h">
-      <Filter>addons\ofxSQLite</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\addons\ofxSQLite\src\ofxSQLiteSelect.h">
-      <Filter>addons\ofxSQLite</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\addons\ofxSQLite\src\ofxSQLiteSimpler.h">
-      <Filter>addons\ofxSQLite</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\addons\ofxSQLite\src\ofxSQLiteType.h">
-      <Filter>addons\ofxSQLite</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\addons\ofxSQLite\src\ofxSQLiteTypeNow.h">
-      <Filter>addons\ofxSQLite</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\addons\ofxSQLite\src\ofxSQLiteUpdate.h">
-      <Filter>addons\ofxSQLite</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\addons\ofxSQLite\src\ofxSQLiteWhere.h">
-      <Filter>addons\ofxSQLite</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\addons\ofxSQLite\src\ofxSQLite.h">
-      <Filter>addons\ofxSQLite</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\addons\ofxSQLite\src\lib\sqlite\sqlite3.h">
-      <Filter>addons\ofxSQLite</Filter>
-    </ClInclude>
     <ClInclude Include="src\keyboard\PDatabase.h">
       <Filter>src\keyboard</Filter>
     </ClInclude>
@@ -358,6 +301,12 @@
     </ClInclude>
     <ClInclude Include="src\keyboard\PTextInput.h">
       <Filter>src\keyboard</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxCsv\src\ofxCsv.h">
+      <Filter>addons\ofxCsv</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxCsv\src\ofxCsvRow.h">
+      <Filter>addons\ofxCsv</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

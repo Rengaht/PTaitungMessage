@@ -12,7 +12,8 @@ class PTextInput{
 	ofRectangle _rect;
 
 	float _font_size;
-	string _str;
+	wstring _wstr;
+	//string _str;
 	int _cursor;
 
 	int _max_text;
@@ -22,6 +23,8 @@ class PTextInput{
 
 public:
 	ofxTrueTypeFontUC Font;	
+	ofEvent<int> _event_enter;
+
 	PTextInput(float x,float y,float font_size_,PKeyboard* kb_,
 			int max_=10,string font_="font/NotoSansCJKtc-Regular.otf"){
 		
@@ -35,7 +38,7 @@ public:
 		_timer_blink=FrameTimer(1000);
 		_timer_blink.setContinuous(true);
 
-		ofAddListener(kb_->_event_input,this,&PTextInput::onInputUpdate);
+		ofAddListener(kb_->_event_input,this,&PTextInput::onInputUpdate);		
 		ofAddListener(kb_->_event_back,this,&PTextInput::onkeyBack);
 		ofAddListener(kb_->_event_enter,this,&PTextInput::onKeyEnter);
 		ofAddListener(kb_->_event_left,this,&PTextInput::onKeyLeft);
@@ -47,12 +50,15 @@ public:
 	}
 	void setFocus(bool set_){
 		_focus=set_;
-		_cursor=max((int)_str.size(),0);
+		_cursor=max((int)_wstr.size(),0);
 	}
 	void reset(){
-		_str="";
+		//_str.clear();
+		_wstr.clear();
+		
 		_cursor=0;
 		_focus=false;
+
 	}
 	void update(float dt_){
 		_timer_blink.update(dt_);
@@ -61,13 +67,15 @@ public:
 		ofPushMatrix();
 		ofTranslate(_pos);
 		//ofTranslate(0,_font_size);
-
-			if(_str.length()>0){
-				Font.drawString(_str.substr(0,_cursor),0,0);
+		
+		string pre_=Param::ws2utf8(_wstr.substr(0,_cursor));
+		string last_=Param::ws2utf8(_wstr.substr(_cursor,_wstr.length()-_cursor));
+			if(_wstr.length()>0){
+				Font.drawString(pre_,0,0);
 			}
 
 			if(_focus){
-				float x=Font.getStringBoundingBox(_str.substr(0,_cursor),0,0).width;
+				float x=Font.getStringBoundingBox(pre_,0,0).width;
 				ofTranslate(x+_font_size*CURSOR_SPACE,0);
 				ofPushStyle();
 				ofSetColor(255,255*_timer_blink.valFade());
@@ -76,7 +84,8 @@ public:
 			
 				ofTranslate(_font_size*CURSOR_SPACE,0);
 			}
-			if(_str.length()>_cursor) Font.drawString(_str.substr(_cursor,_str.length()-_cursor),0,0);
+			if(_wstr.length()>_cursor) Font.drawString(last_,0,0);
+
 		ofPopMatrix();
 	}
 	void drawDebug(){
@@ -90,29 +99,38 @@ public:
 	void onInputUpdate(string& set_){
 		
 		if(!_focus) return;
-		if(_str.size()>=_max_text) return;
 
-		_str.insert(_cursor,set_);
+		wstring ws=Param::utf82ws(set_);
+
+		if(_wstr.size()>=_max_text) return;
+
+		//_str+=set_;
+		_wstr+=ws;
+		/*_str.insert(_cursor,ws);
+		_cursor++;*/
 		_cursor++;
 
-		if(_str.size()==0) _rect=ofRectangle(_pos.x,_pos.y,_font_size*_max_text/3,_font_size);
-		else _rect=Font.getStringBoundingBox(_str,_pos.x,_pos.y);
+		if(_wstr.size()==0) _rect=ofRectangle(_pos.x,_pos.y,_font_size*_max_text/3,_font_size);
+		else _rect=Font.getStringBoundingBox(Param::ws2utf8(_wstr),_pos.x,_pos.y);
 	}
+	
 	void onKeyEnter(int& e){
 		if(!_focus) return;
+		int t=0;
+		ofNotifyEvent(_event_enter,t);
 	}
 	void onKeyLeft(int& e){
 		if(!_focus) return;
-		_cursor=ofClamp(_cursor-1,0,_str.length());
+		_cursor=ofClamp(_cursor-1,0,_wstr.length());
 	}
 	void onKeyRight(int& e){
 		if(!_focus) return;
-		_cursor=ofClamp(_cursor+1,0,_str.length());
+		_cursor=ofClamp(_cursor+1,0,_wstr.length());
 	}
 	void onkeyBack(int &e){
 		if(!_focus) return;
 		if(_cursor>0){
-			_str.erase(_cursor-1,1);
+			_wstr.erase(_cursor-1,1);
 			_cursor--;
 		}
 	}
@@ -121,7 +139,7 @@ public:
 	}
 
 	string getValue(){
-		return _str;
+		return Param::ws2utf8(_wstr);
 	}
 
 

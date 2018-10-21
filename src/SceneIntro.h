@@ -32,6 +32,7 @@ public:
 		
 		//ofAddListener(SceneBase::sceneInFinish,this,&SceneIntro::onSceneInFinish);
 		ofAddListener(_timer_in[0].finish_event,this,&SceneIntro::onObjInFinish);
+		ofAddListener(_timer_in[2].finish_event,this,&SceneIntro::onTextInFinish);
 	}
 	void loadImage(){
 		
@@ -83,6 +84,9 @@ public:
 		if(e!=_order_scene) return;
 		
 		_hint[_index_hint].restart();
+		
+	}
+	void onTextInFinish(int &e){
 		for(auto& en:_enable_button) en=true;
 	}
 

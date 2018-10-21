@@ -280,9 +280,7 @@ public:
 			_timer_time_in.restart();			
 			setMode(RMode::WAIT);
 
-		}else if(_mode==CLOSE){
-			_timer_button_out.restart();
-			_timer_time_out.restart();
+		}else if(_mode==CLOSE){			
 			
 			_timer_scale.restart();
 		}
@@ -349,7 +347,10 @@ public:
 				_pos_begin_right=_pos_dest_right;
 				_pos_dest_left=POS_PILL_LCLOSE;	
 				_pos_dest_right=POS_PILL_RCLOSE;	
+				
 				_timer_pill.restart();
+				_timer_button_out.restart();
+				_timer_time_out.restart();
 
 				for(auto& en:_enable_button) en=false;
 

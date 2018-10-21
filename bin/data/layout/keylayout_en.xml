@@ -9,7 +9,7 @@
 	<KEY>i</KEY>
 	<KEY>o</KEY>
 	<KEY>p</KEY>
-	<KEY wid=2>BCK</KEY>	
+	<KEY wid=1.5>BCK</KEY>	
 </LINE>
 <LINE dx=0.5>
 	<KEY>a</KEY>
@@ -21,8 +21,7 @@
 	<KEY>j</KEY>
 	<KEY>k</KEY>
 	<KEY>l</KEY>
-	<KEY>'</KEY>
-	<KEY wid=1.5>ENTER</KEY>	
+	<KEY wid=2>ENTER</KEY>	
 </LINE>
 <LINE>
 	<KEY>SHIFT</KEY>
@@ -33,15 +32,16 @@
 	<KEY>b</KEY>
 	<KEY>n</KEY>
 	<KEY>m</KEY>
-	<KEY>,</KEY>
+	<KEY>@</KEY>
 	<KEY>.</KEY>
-	<KEY>?</KEY>
-	<KEY>SHIFT</KEY>	
+	<KEY wid=1.5>SHIFT</KEY>	
 </LINE>
-<LINE dx=1>
+<LINE dx=0>
 	<KEY>&amp;123</KEY>
-	<KEY>en</KEY>
-	<KEY wid=6>SPACE</KEY>
-	<KEY>LEFT</KEY>
-	<KEY>RIGHT</KEY>
+	<KEY>LAN</KEY>
+	<KEY wid=5>SPACE</KEY>
+	<KEY>_</KEY>
+	<KEY>-</KEY>
+	<KEY wid=1.25>LEFT</KEY>
+	<KEY wid=1.25>RIGHT</KEY>
 </LINE>
