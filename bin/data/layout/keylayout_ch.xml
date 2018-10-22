@@ -23,7 +23,7 @@
 	<KEY sign="o">ㄛ</KEY>
 	<KEY sign="ei">ㄟ</KEY>
 	<KEY sign="en">ㄣ</KEY>	
-	<KEY wid=1.5>ENTER</KEY>
+	<KEY wid=1.5>SPACE</KEY>
 </LINE>
 <LINE dx=1>
 	<KEY sign="m">ㄇ</KEY>
@@ -36,7 +36,7 @@
 	<KEY sign="e">ㄜ</KEY>
 	<KEY sign="qu">ㄠ</KEY>
 	<KEY sign="ang">ㄤ</KEY>
-	<KEY wid=1>SPACE</KEY>	
+	<KEY wid=1>ENTER</KEY>	
 </LINE>
 <LINE>
 	<KEY>&amp;123</KEY>

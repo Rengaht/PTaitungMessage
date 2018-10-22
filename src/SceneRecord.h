@@ -2,12 +2,12 @@
 #ifndef SCENE_RECORD_H
 #define SCENE_RECORD_H
 
-#define POS_PILL_LOPEN 0
-#define POS_PILL_LCLOSE 344
+#define POS_PILL_LOPEN 610
+#define POS_PILL_LCLOSE 960
 
-#define POS_PILL_ROPEN 1304
+#define POS_PILL_ROPEN 1310
 #define POS_PILL_RCLOSE 960
-#define POS_PILL_Y 170
+//#define POS_PILL_Y 170
 
 #include "SceneBase.h"
 
@@ -17,7 +17,7 @@ class SceneRecord:public SceneBase{
 	
 	//bool _mode_record;
 	ofImage _img_listen;
-	ofImage _img_pill_left,_img_pill_right;
+	//ofImage _img_pill_left,_img_pill_right;
 
 	FrameTimer _timer_pill,_timer_scale;
 	FrameTimer _timer_record;
@@ -60,8 +60,8 @@ public:
 
 		_timer_sample=FrameTimer(_ptr_app->_param->_time_record/(float)_ptr_app->_param->_spectrum_size);
 
-		_begin_scale=1.0;
-		_dest_scale=1.316;
+		_begin_scale=456;
+		_dest_scale=600;
 		_timer_scale=FrameTimer(450);
 
 		_font_time.loadFont("font/GothamHTF-Book.ttf",34);
@@ -85,8 +85,8 @@ public:
 
 		_img_listen.loadImage("ui/button-04.png");
 
-		_img_pill_left.loadImage("ui/pill-23.png");
-		_img_pill_right.loadImage("ui/pill-24.png");
+		/*_img_pill_left.loadImage("ui/pill-23.png");
+		_img_pill_right.loadImage("ui/pill-24.png");*/
 	
 
 		_button.push_back(ofRectangle(917,892,85,85));
@@ -116,34 +116,14 @@ public:
 
 		float px1=ofLerp(_pos_begin_left,_pos_dest_left,v);
 		float px2=ofLerp(_pos_begin_right,_pos_dest_right,v);
-		float py=POS_PILL_Y;
-		float cx=960;
-		float cy=540;
+
 
 		switch(i){			
 			case 0: //pill
 
-				drawSpectrum();
-
-				ofSetColor(_ptr_app->getSelectColor());	
-
-				ofPushMatrix();
-				ofTranslate(px1,py);	
-				ofTranslate(cx-px1,cy-py);
-				ofScale(v2,v2);
-				ofTranslate(-cx+px1,-cy+py);
-					_img_pill_left.draw(0,0);
-				ofPopMatrix();
-
-				ofPushMatrix();
-				ofTranslate(px2,py);	
-				ofTranslate(cx-px2,cy-py);
-				ofScale(v2,v2);
-				ofTranslate(-cx+px2,-cy+py);
-					_img_pill_right.draw(0,0);
-				ofPopMatrix();
-			
-				
+				drawSpectrum();				
+				drawPillLeft(px1,v2,_ptr_app->getSelectColor());
+				drawPillRight(px2,v2,_ptr_app->getSelectColor());
 
 				break;
 			case 1: //button
@@ -155,7 +135,7 @@ public:
 
 				ofPopStyle();
 
-				float a=_timer_time_in.valEaseInOut()*(1-_timer_time_out.valEaseInOut());
+				float a=_timer_time_in.valEaseInOut()*(1-_timer_time_out.valEaseOut());
 				ofPushStyle();
 				ofSetColor(255,255*a);
 					drawTime();				
@@ -329,6 +309,8 @@ public:
 				_enable_button[1]=true;
 				_enable_button[2]=true;
 				_enable_button[3]=true;
+				
+				SceneBase::_timer_sleep.restart();
 
 				break;
 			case PLAY:

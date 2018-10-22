@@ -8,7 +8,7 @@ class SceneColor:public SceneBase{
 
 	
 	FrameTimer _timer_color;
-	ofColor _color,_pre_color;
+	int _color,_pre_color;
 public:
 	
 	SceneColor(ofApp *set_):SceneBase(set_){
@@ -54,12 +54,17 @@ public:
 
 	} 
 	void drawLayer(int i){		
-
+		
 		if(i==2){
 			float v=_timer_color.valEaseInOut();
-			ofSetColor(ofLerp(_pre_color.r,_color.r,v),
+			/*ofSetColor(ofLerp(_pre_color.r,_color.r,v),
 						ofLerp(_pre_color.g,_color.g,v),
-						ofLerp(_pre_color.b,_color.b,v));		
+						ofLerp(_pre_color.b,_color.b,v));		*/
+			
+			drawPillLeft(1920,600,_color,v);
+			drawPillLeft(1920,600,_pre_color,1-v);
+			
+			return;
 		}
 		SceneBase::drawLayer(i);		
 	}
@@ -95,11 +100,13 @@ public:
 	}
 
 	void setColor(int set_){		
+		if(_color==set_) return;
+
 		_ptr_app->setSelectColor(set_);
 
 		_timer_color.restart();
 		_pre_color=_color;
-		_color=_ptr_app->getSelectColor();
+		_color=set_;
 	}
 };
 

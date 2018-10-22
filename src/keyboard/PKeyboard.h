@@ -82,13 +82,15 @@ private:
 	list<PKey> _select;
 	bool _show_select;
 
+	int _max_text_length;
+
 public:
 	enum PLANGUAGE {EN,ENCAP,CHINESE,NUMBER};
 	PLANGUAGE _language;
 	void setLanguage(PLANGUAGE set_);
 
-	ofEvent<string> _event_input,_event_spelling;
-	ofEvent<int> _event_enter,_event_back,_event_left,_event_right;
+	ofEvent<wstring> _event_input;//_event_spelling;
+	ofEvent<int> _event_enter,_event_cursor;//_event_back,_event_left,_event_right;
 
 	ofVec2f _pos,_size;		
 	ofVec2f _size_key;
@@ -103,15 +105,28 @@ public:
 	bool mouseInside(float mousex,float mousey);
 	void keyEvent(PKey& key_);
 	void keyEventP(PKey& key_);
+
+	void onKeyLeft();
+	void onKeyRight();
+	void onKeyEnter();
+	void onKeyBack();
 	
-	string _str_spelling;
-	string _utf8_spelling;
+	string getSpellingStr();
+	void updateSpelling();
+
+	list<string>_str_spelling;
+	wstring _wstr;
 	
+	wstring _wstr_spelling;
+	int _cursor,_cursor_spelling;
 
 	int _index_select;
 
+	void reset();
+	void resetSpelling();
 
-
+	
+	void updateInput(wstring str_,int pcursor_,int maxtext_);
 };
 
 

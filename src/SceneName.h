@@ -13,7 +13,7 @@ public:
 		setup();
 		_order_scene=3;
 
-		_input_name=new PTextInput(1029,674,56,_ptr_app->_keyboard);
+		_input_name=new PTextInput(1029,674,56,_ptr_app->getKeyboard());
 		ofAddListener(SceneBase::sceneInFinish,this,&SceneName::onSceneInFinish);
 		ofAddListener(_input_name->_event_enter,this,&SceneName::onNameEnter);
 	}
@@ -43,7 +43,10 @@ public:
 
 	} 
 	void drawLayer(int i){		
-		if(i==0) ofSetColor(_ptr_app->getSelectColor());		
+		if(i==0){
+			drawPillRight(0,600,_ptr_app->getSelectColor());
+			return;
+		}
 		if(i==1){
 			_input_name->draw();			
 		}
@@ -90,10 +93,10 @@ public:
 	void init(){
 		SceneBase::init();		
 		_input_name->reset();
-
+		_ptr_app->updateKeyboardInput(_input_name->getWValue(),_input_name->getCursor(),_input_name->getMaxText());
 	}
 	void end(){
-		
+		_input_name->setFocus(false);
 		_ptr_app->setUserName(_input_name->getValue());
 		SceneBase::end();
 	}
@@ -101,9 +104,9 @@ public:
 		
 		bool b=SceneBase::handleMousePressed(mouse_x,mouse_y);
 
-		if(_input_name->mouseInside(_mouse_pos.x,_mouse_pos.y)){
-			_ptr_app->_keyboard->setLanguage(PKeyboard::PLANGUAGE::CHINESE);
-			_ptr_app->_show_keyboard=true;
+		if(_input_name->mouseInside(_mouse_pos.x,_mouse_pos.y)){			
+			_ptr_app->setShowKeyboard(true,PKeyboard::PLANGUAGE::CHINESE);
+			_ptr_app->updateKeyboardInput(_input_name->getWValue(),_input_name->getCursor(),_input_name->getMaxText());
 			b=true;
 			_input_name->setFocus(true);
 		}
@@ -112,7 +115,9 @@ public:
 
 	}
 	void onNameEnter(int& e){
-		_ptr_app->setScene(ofApp::PStatus::PRECORD);
+		/*if(_input_name->getValue().size()>0) 
+			_ptr_app->setScene(ofApp::PStatus::PRECORD);*/
+		_ptr_app->setShowKeyboard(false);
 	}
 };
 

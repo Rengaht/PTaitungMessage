@@ -60,8 +60,9 @@ public:
 
 	} 
 	void drawLayer(int i){		
-		SceneBase::drawLayer(i);
+		
 		if(i==1) for(auto& h:_hint) h.draw();
+		else SceneBase::drawLayer(i);
 	}
 	void update(float dt_){
 		SceneBase::update(dt_);

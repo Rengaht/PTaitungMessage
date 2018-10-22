@@ -4,6 +4,7 @@
 #include "ofxLibsndFileRecorder.h"
 #include "bmFFT.h"
 #include "ofxCsv.h"
+#include "ofxOsc.h"
 
 #include "FrameTimer.h"
 #include "TextRunner.h"
@@ -34,6 +35,10 @@ class ofApp : public ofBaseApp{
 		string _user_id;
 		string _user_name,_user_email,_user_phone;
 
+
+		bool _show_keyboard;
+		//keyboard
+		PKeyboard* _keyboard;
 	public:
 
 		static ofColor MainColor[4];
@@ -66,7 +71,7 @@ class ofApp : public ofBaseApp{
 
 		
 		void setSelectColor(int set_);
-		ofColor getSelectColor();
+		int getSelectColor();
 
 		ofSoundStream _sound_stream;
 		void audioIn(float * input, int bufferSize, int nChannels); 
@@ -87,10 +92,10 @@ class ofApp : public ofBaseApp{
 		void setFFT(bool set_);
 		float* _fft_band;
 
-
-		//keyboard
-		bool _show_keyboard;
-		PKeyboard* _keyboard;
+		PKeyboard* getKeyboard();
+		void setShowKeyboard(bool set_,PKeyboard::PLANGUAGE lan_=PKeyboard::PLANGUAGE::EN);
+		void updateKeyboardInput(wstring str_,int cursor_,int max_);
+		
 		
 		void setUserName(string set_);
 		void setUserEmail(string set_);
@@ -100,4 +105,7 @@ class ofApp : public ofBaseApp{
 		// for output
 		ofxCsv _csv_user_output;
 		void saveUserData();
+
+
+		void sendUpdateOsc();
 };

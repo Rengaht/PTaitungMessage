@@ -23,10 +23,6 @@ void ofApp::setup(){
 
 	_param=new Param();
 
-	//read csv
-	_csv_user_output.load(Param::val()->_csv_record);
-	ofLog()<<"load csv data with "<<_csv_user_output.getNumRows()<<" rows!";
-
 
 	_now_millis=ofGetElapsedTimeMillis();
 
@@ -38,6 +34,19 @@ void ofApp::setup(){
 	ofDisableArbTex();
 	_img_back.loadImage("ui/back.png");
 	_img_back.getTextureReference().setTextureWrap(GL_MIRRORED_REPEAT,GL_MIRRORED_REPEAT);
+
+	SceneBase::ImgPillLeft=new ofImage[4];
+	SceneBase::ImgPillRight=new ofImage[4];
+	SceneBase::ImgPillLeft[0]=ofImage("ui/ground-1.png");
+	SceneBase::ImgPillLeft[1]=ofImage("ui/sky-1.png");
+	SceneBase::ImgPillLeft[2]=ofImage("ui/white-1.png");
+	SceneBase::ImgPillLeft[3]=ofImage("ui/yellow-1.png");
+
+	SceneBase::ImgPillRight[0]=ofImage("ui/ground-2.png");
+	SceneBase::ImgPillRight[1]=ofImage("ui/sky-2.png");
+	SceneBase::ImgPillRight[2]=ofImage("ui/white-2.png");
+	SceneBase::ImgPillRight[3]=ofImage("ui/yellow-2.png");
+
 	
 	_show_keyboard=false;
 	_keyboard=new PKeyboard(ofVec2f(450,720),ofVec2f(1020,340),18);
@@ -48,7 +57,7 @@ void ofApp::setup(){
 	setScene(PStatus::PHOME);*/
 
 	_mode_pre=PEMPTY;
-	_mode=PNAME;
+	_mode=PCOLOR;
 	_scene[_mode]->init();
 
 	_mesh_back.addVertex(ofVec2f(0,0));
@@ -69,6 +78,8 @@ void ofApp::setup(){
 
 	ofAddListener(SceneBase::sceneInFinish,this,&ofApp::onSceneInFinish);
 	ofAddListener(SceneBase::sceneOutFinish,this,&ofApp::onSceneOutFinish);
+
+	ofEnableAlphaBlending();
 
 }
 
@@ -95,7 +106,7 @@ void ofApp::update(){
 //--------------------------------------------------------------
 void ofApp::draw(){
 	ofSetBackgroundColor(0);
-	ofEnableAlphaBlending();
+	
 
 	ofEnableNormalizedTexCoords();
 	_img_back.bind();
@@ -120,6 +131,7 @@ void ofApp::draw(){
 	_scene[_mode]->drawScaled(true);
 
 	ofDrawBitmapString("fps= "+ofToString(ofGetFrameRate()),10,10);
+	ofDrawBitmapString("sleep= "+ofToString((1-SceneBase::_timer_sleep.val())*Param::val()->_time_sleep/1000.0),10,20);
 	if(_show_keyboard){
 		ofPushMatrix();
 		ofScale(SceneBase::WinScale,SceneBase::WinScale);
@@ -162,7 +174,9 @@ void ofApp::mouseReleased(int x, int y, int button){
 	if(_show_keyboard){
 		bool ktrigger_=_keyboard->checkMouse(ofPoint(x/SceneBase::WinScale,y/SceneBase::WinScale));
 		if(!trigger_ && !ktrigger_){
-			_show_keyboard=false;
+			setShowKeyboard(false);
+		}else{
+			SceneBase::_timer_sleep.restart();
 		}
 	}
 }
@@ -193,11 +207,8 @@ void ofApp::setScene(PStatus set_){
 
 	ofLog()<<"set scene: "<<set_;
 	
-
 	_mode_pre=_mode;
 	
-
-
 	_mode=set_;
 
 	if(_mode_pre!=PEMPTY) _scene[_mode_pre]->end();
@@ -206,9 +217,10 @@ void ofApp::setScene(PStatus set_){
 	}
 	
 	_scene[_mode]->init();
-	_show_keyboard=false;
-	_keyboard->setLanguage(PKeyboard::PLANGUAGE::EN);
-
+	
+	setShowKeyboard(false);
+	_keyboard->reset();
+	
 	_in_transition=true;
 
 	
@@ -217,8 +229,8 @@ void ofApp::setScene(PStatus set_){
 void ofApp::setSelectColor(int set_){
 	_select_color=set_;
 }
-ofColor ofApp::getSelectColor(){
-	return MainColor[_select_color];
+int ofApp::getSelectColor(){
+	return _select_color;
 }
 
 void ofApp::setRecording(bool set_){
@@ -309,20 +321,58 @@ void ofApp::setUserPhone(string set_){
 }
 void ofApp::saveUserData(){
 	
-	ofxCsvRow row_;
-	row_.addString(_user_id);
-	row_.addInt(_select_color);
-	row_.addString(_user_name);
-	row_.addString(_user_email);
-	row_.addString(_user_phone);
+	if(_user_id==""){
+		ofLog()<<"Save failed! No user id!";
+		return;
+	}
 
-	cout<<"save data:"<<endl
-		<<"id= "<<_user_id<<endl
-		<<"user= "<<_user_name<<endl
-		<<"email= "<<_user_email<<endl
-		<<"phone= "<<_user_phone<<endl;
+	//ofxCsvRow row_;
+	//row_.addString(_user_id);
+	//row_.addInt(_select_color);
+	//row_.addString(_user_name);
+	//row_.addString(_user_email);
+	//row_.addString(_user_phone);
+	
+	string csv_row=_user_id+","+ofToString(_select_color)+","+_user_name+","+_user_email+","+_user_phone+"\n";
+	ofLog()<<"save data:"<<csv_row<<endl;
 
+
+	/*_csv_user_output.load(Param::val()->_csv_record);
+	ofLog()<<"load csv data with "<<_csv_user_output.getNumRows()<<" rows!";*/
+
+	/*_csv_user_output.clear();
 	_csv_user_output.addRow(row_);
-	_csv_user_output.save();
+	_csv_user_output.save(Param::val()->_csv_record);*/
 
+	ofFile file_;
+	file_.open(Param::val()->_csv_record,ofFile::Append);
+	file_<<csv_row;
+	file_.close();
+
+	sendUpdateOsc();
+}
+
+void ofApp::setShowKeyboard(bool set_,PKeyboard::PLANGUAGE lan_){
+	_show_keyboard=set_;
+	_keyboard->setLanguage(lan_);	
+	//_keyboard->reset();
+}
+
+PKeyboard* ofApp::getKeyboard(){
+	return _keyboard;
+}
+void ofApp::updateKeyboardInput(wstring str_,int cursor_,int max_){
+	_keyboard->updateInput(str_,cursor_,max_);
+}
+
+
+void ofApp::sendUpdateOsc(){
+	ofxOscSender sender;
+	sender.setup(Param::val()->_osc_address,Param::val()->_osc_port);
+
+	ofxOscMessage message;
+	message.setAddress("/update");
+	message.addIntArg(1);
+	sender.sendMessage(message);
+	
 }

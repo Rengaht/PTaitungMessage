@@ -24,11 +24,13 @@ public:
 	int _index_question;
 
 	int _time_record;
+	int _time_sleep;
 
 	float _spectrum_scale;
 	float _spectrum_size;
 
-	
+	string _osc_address;
+	int _osc_port;
 
 	Param(){
 		readParam();
@@ -66,8 +68,14 @@ public:
 		_csv_record=_param.getValue("CSV_RECORD","");
 
 		_time_record=_param.getValue("TIME_RECORD",0);
+		_time_sleep=_param.getValue("TIME_SLEEP",0);
+
 		_spectrum_scale=_param.getValue("SPECTRUM_SCALE",500000.0);
 		_spectrum_size=_param.getValue("SPECTRUM_SIZE",200.0);
+
+		_osc_address=_param.getValue("OSC_ADDRESS","");
+		_osc_port=_param.getValue("OSC_PORT",12345);
+
 
 		if(!file_exist) saveParameterFile();
 
@@ -123,8 +131,13 @@ public:
 		_param.setValue("CSV_RECORD",_csv_record);
 
 		_param.setValue("TIME_RECORD",_time_record);
+		_param.setValue("TIME_SLEEP",_time_sleep);
+
 		_param.setValue("SPECTRUM_SIZE",_spectrum_size);
 		_param.setValue("SPECTRUM_SCALE",_spectrum_scale);
+
+		_param.setValue("OSC_ADDRESS",_osc_address);
+		_param.setValue("OSC_PORT",_osc_port);
 		
 		_param.save(ParamFilePath);
 

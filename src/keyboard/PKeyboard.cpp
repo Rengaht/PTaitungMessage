@@ -79,7 +79,32 @@ PKeyboard::PKeyboard(ofVec2f pos_,ofVec2f size_,int font_size_){
 	loadKeyLayout("layout/keylayout_ch.xml",_key_chinese);
 
 	setLanguage(EN);
+	reset();
 }
+void PKeyboard::reset(){
+	resetSpelling();
+	_wstr.clear();
+	_show_select=false;
+	_cursor=0;
+	_cursor_spelling=0;
+
+	//setLanguage(EN);
+}
+void PKeyboard::resetSpelling(){
+
+	
+	if(_wstr_spelling.size()>0){
+		_wstr.erase(_cursor_spelling,_wstr_spelling.size());
+		_cursor=_cursor_spelling;
+	}
+	ofNotifyEvent(_event_input,_wstr);
+	ofNotifyEvent(_event_cursor,_cursor);
+
+	_wstr_spelling.clear();
+	_str_spelling.clear();
+
+}
+
 void PKeyboard::draw(bool debug_){
 
 	ofPushMatrix();
@@ -89,7 +114,7 @@ void PKeyboard::draw(bool debug_){
 	float y=0;
 
 	if(_language==CHINESE){
-		PKey::Font.drawString(_utf8_spelling,0,0);	
+		//PKey::Font.drawString(_utf8_spelling,0,0);	
 
 		if(_select.size()>0){
 			auto it_=_select.begin();
@@ -122,18 +147,14 @@ bool PKeyboard::checkMouse(ofPoint pt_){
 	int t=0;
 	for(auto& k:*_key){
 		if(k.inside(pt_)){
-			ofLog()<<k._key;
+			//ofLog()<<k._key;
 			if(k._key=="SPACE"){
 				
 				if(_language==CHINESE) keyEventP(k);
 				else keyEvent(k);
 
 			}else if(k._key=="BCK"){
-
-				if(_language==CHINESE){
-					//TODO!!!
-				}
-				ofNotifyEvent(_event_back, t);
+				onKeyBack();
 			}else if(k._key=="&123"){
 				setLanguage(NUMBER);
 			}else if(k._key=="abc"){
@@ -147,17 +168,12 @@ bool PKeyboard::checkMouse(ofPoint pt_){
 				if(_language==EN) setLanguage(ENCAP);
 				else if(_language==ENCAP) setLanguage(EN);
 			}else if(k._key=="ENTER"){
-				ofNotifyEvent(_event_enter,t);
+				onKeyEnter();
 			}else if(k._key=="LEFT"){
+				onKeyLeft();
 				
-				if(_show_select){
-					if(_index_select>=MSELECT_SHOW) _index_select-=MSELECT_SHOW;
-				}else ofNotifyEvent(_event_left,t);
-
 			}else if(k._key=="RIGHT"){
-				if(_show_select){
-					if(_index_select+MSELECT_SHOW<_select.size()) _index_select+=MSELECT_SHOW;
-				}else ofNotifyEvent(_event_right,t);
+				onKeyRight();
 			}else{
 				if(_language==CHINESE) keyEventP(k);
 				else keyEvent(k);
@@ -182,11 +198,24 @@ void PKeyboard::keyEvent(PKey& key_){
 	
 	if(_language==CHINESE){
 		_str_spelling.clear();
-		_utf8_spelling.clear();
-		ofNotifyEvent(_event_spelling,_str_spelling);
+		//_utf8_spelling.clear();
+		//ofNotifyEvent(_event_spelling,_str_spelling);
+
+		updateSpelling();
+
 	}
 	string s=key_._word;
-	ofNotifyEvent(_event_input,s);
+
+	
+	if(_wstr.size()<_max_text_length-1){
+		_wstr.insert(_cursor,Param::utf82ws(s));
+		_cursor++;	
+	}
+
+	_cursor_spelling=_cursor;
+
+	ofNotifyEvent(_event_input,_wstr);
+	ofNotifyEvent(_event_cursor,_cursor);
 	_show_select=false;
 
 	
@@ -194,30 +223,104 @@ void PKeyboard::keyEvent(PKey& key_){
 void PKeyboard::keyEventP(PKey& key_){
 		
 		if(key_._key!="SPACE"){
-			_str_spelling+=key_._word;
-			_utf8_spelling+=key_._u8s;
-			ofNotifyEvent(_event_spelling,_str_spelling);
-
+			_str_spelling.push_back(key_._word);
+			updateSpelling();
 		}
 
-		if(key_._key=="5"||key_._key=="2"||key_._key=="3"||key_._key=="4"||key_._key=="SPACE"){
+		if(_str_spelling.size()>3 || key_._key=="5"||key_._key=="2"||key_._key=="3"||key_._key=="4"||key_._key=="SPACE"){
 			
-			auto ww=_db.key2CWord(_str_spelling);
+			auto ww=_db.key2CWord(getSpellingStr());
 			//ofNotifyEvent(_event_input,ww);
 			_select.clear();
-			int m=0;
-			float wid=_size_key.x;
-			for(auto& w:ww){
-				_select.push_back(PKey(w,w,_size.x+wid*.5+wid*(m%3)+wid*KEY_MARGIN,wid*floor(m%9/3)+wid*KEY_MARGIN,
-										wid-wid*2*KEY_MARGIN,wid-wid*2*KEY_MARGIN));
-				m++;
+
+			if(ww.size()==0){
+				resetSpelling();
+			}else{
+				int m=0;
+				float wid=_size_key.x;
+				for(auto& w:ww){
+					_select.push_back(PKey(w,w,_size.x+wid*.5+wid*(m%3)+wid*KEY_MARGIN,wid*floor(m%9/3)+wid*KEY_MARGIN,
+											wid-wid*2*KEY_MARGIN,wid-wid*2*KEY_MARGIN));
+					m++;
+				}
+				_index_select=0;
+				_show_select=true;
 			}
-			_index_select=0;
-			_show_select=true;
-			
 			
 		}
 	
+}
+string PKeyboard::getSpellingStr(){
+	string str_="";
+	for(auto& s:_str_spelling) str_+=s;
+	return str_;
+}
+void PKeyboard::updateSpelling(){
+	
+	string set_=getSpellingStr();
+	wstring ws=Param::utf82ws(set_);
+
+	_wstr.erase(_cursor_spelling,_wstr_spelling.size());
+	_cursor=_cursor_spelling;
+
+	_wstr_spelling=ws;
+
+	if(ws.size()>0){
+		_wstr.insert(_cursor,ws);
+		_cursor_spelling=_cursor;
+		_cursor+=ws.size();
+	}else{
+		_cursor_spelling=_cursor;
+	}
+
+	ofNotifyEvent(_event_input,_wstr);
+	ofNotifyEvent(_event_cursor,_cursor);
+
+}
+
+void PKeyboard::onKeyLeft(){
+	if(_show_select){
+		if(_index_select>=MSELECT_SHOW) _index_select-=MSELECT_SHOW;
+	}else{
+		_cursor=ofClamp(_cursor-1,0,_wstr.length());
+		if(_wstr_spelling.size()==0) _cursor_spelling=_cursor;
+		ofNotifyEvent(_event_cursor,_cursor);
+
+	}
+}
+void PKeyboard::onKeyRight(){
+	if(_show_select){
+		if(_index_select+MSELECT_SHOW<_select.size()) _index_select+=MSELECT_SHOW;
+	}else{
+		_cursor=ofClamp(_cursor+1,0,_wstr.length());
+		if(_wstr_spelling.size()==0) _cursor_spelling=_cursor;
+		ofNotifyEvent(_event_cursor,_cursor);
+
+	}
+}
+void PKeyboard::onKeyEnter(){
+	int t=0;
+	resetSpelling();
+
+	ofNotifyEvent(_event_enter,t);
+}
+void PKeyboard::onKeyBack(){
+	if(_cursor>0){
+		if(_wstr_spelling.size()==0){
+			_wstr.erase(_cursor-1,1);
+			_cursor--;
+			_cursor_spelling=_cursor;
+
+			ofNotifyEvent(_event_input,_wstr);
+			ofNotifyEvent(_event_cursor,_cursor);
+		}else{
+			auto it_=_str_spelling.begin();
+			advance(it_,_cursor-_cursor_spelling-1);
+			_str_spelling.erase(it_);
+			_cursor--;
+			updateSpelling();
+		}
+	}
 }
 
 void PKeyboard::setLanguage(PLANGUAGE set_){
@@ -236,9 +339,9 @@ void PKeyboard::setLanguage(PLANGUAGE set_){
 			break;
 	}
 	_language=set_;
-	_show_select=false;
-	_str_spelling.clear();
-	_utf8_spelling.clear();
+	
+	resetSpelling();
+	//_utf8_spelling.clear();
 }
 
 bool PKeyboard::mouseInside(float mousex,float mousey){
@@ -247,4 +350,14 @@ bool PKeyboard::mouseInside(float mousex,float mousey){
 		return  _rect.inside(mousex,mousey) || _rect_select.inside(mousex,mousey);	
 
 	return _rect.inside(mousex,mousey);
+}
+
+void PKeyboard::updateInput(wstring str_,int pcursor_,int maxtext_){
+	_max_text_length=maxtext_;
+	_wstr=str_;
+	_cursor_spelling=_cursor=pcursor_;
+
+
+	ofNotifyEvent(_event_input,_wstr);
+	ofNotifyEvent(_event_cursor,_cursor);
 }

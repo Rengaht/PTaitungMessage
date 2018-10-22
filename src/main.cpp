@@ -11,6 +11,8 @@ ofSoundPlayer SceneBase::SoundButton=ofSoundPlayer();
 float SceneBase::EaseDue=1200;
 float SceneBase::EaseDelay=0;
 float SceneBase::EaseDistort=0.2;
+ofImage* SceneBase::ImgPillLeft=0;
+ofImage* SceneBase::ImgPillRight=0;
 
 
 ofxTrueTypeFontUC TextRunner::TextFont;

@@ -4,11 +4,13 @@
 
 ofEvent<int> SceneBase::sceneInFinish=ofEvent<int>();
 ofEvent<int> SceneBase::sceneOutFinish=ofEvent<int>();
+FrameTimer SceneBase::_timer_sleep=FrameTimer();
 
 
 SceneBase::SceneBase(ofApp *set_ptr){
 
 	_ptr_app=set_ptr;
+	_timer_sleep=FrameTimer(Param::val()->_time_sleep);
 }
 void SceneBase::setup(){
 
@@ -49,10 +51,13 @@ void SceneBase::draw(){
 	for(auto& i:_zindex){
 				
 		ofPushStyle();
-		if(i==_mlayer-1) ofSetColor(255,255*_timer_in[i].valEaseInOut()*(1-_timer_out[i].valEaseInOut()));		
 			ofPushMatrix();
-			if(i!=_mlayer-1) ofTranslate(_img_ui[i].getWidth()*(1-_timer_in[i].valEaseInOut()-_timer_out[i].valEaseInOut()),0);
+			
+			if(i==_mlayer-1) ofSetColor(255,255*_timer_in[i].valEaseInOut()*(1-_timer_out[i].valEaseInOut()));		
+			else ofTranslate(_img_ui[i].getWidth()*(1-_timer_in[i].valEaseOut()-_timer_out[i].valEaseOut()),0);
+				
 				drawLayer(i);
+
 			ofPopMatrix();
 		ofPopStyle();	
 	}	
@@ -112,7 +117,16 @@ void SceneBase::update(float dt_){
 				if(!_trigger_in){
 					ofNotifyEvent(sceneInFinish,_order_scene,this);
 					_trigger_in=true;
+
+					_timer_sleep.restart();
 				}
+			}
+			break;
+		case Due:
+			_timer_sleep.update(dt_);
+			if(_order_scene!=0 && _timer_sleep.finish()){
+				ofLog()<<"Back to sleep...";
+				_ptr_app->setScene(ofApp::PStatus::PHOME);
 			}
 			break;
 		case End:
@@ -126,10 +140,7 @@ void SceneBase::update(float dt_){
 					_trigger_out=true;
 				}
 			}
-			break;
-		case Due:
-
-			break;
+			break;	
 	}
 }
 
@@ -165,5 +176,27 @@ bool SceneBase::handleMousePressed(float mouse_x,float mouse_y){
 			}else SoundButton.play();	
 		}
 	}
+	
 	return b;
+}
+
+void SceneBase::drawPillLeft(float x1,float hei,int index_,float a_){
+	ofPushStyle();
+	ofSetColor(255,255*a_);
+	
+	ofPushMatrix();
+	ofTranslate(x1-hei*1.153,540-hei/2);
+		ImgPillLeft[index_].draw(0,0,hei*1.153,hei);
+	ofPopMatrix();
+
+	ofPopStyle();
+}
+void SceneBase::drawPillRight(float x1,float hei,int index_,float a_){
+	ofPushStyle();
+	ofSetColor(255,255*a_);
+	ofPushMatrix();
+	ofTranslate(x1,540-hei/2);
+		ImgPillRight[index_].draw(0,0,hei*1.153,hei);
+	ofPopMatrix();
+	ofPopStyle();
 }

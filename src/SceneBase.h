@@ -66,7 +66,13 @@ public:
 
 	//static ofSoundPlayer SoundIcon;
 	static ofSoundPlayer SoundButton;
+	static FrameTimer _timer_sleep;
+	
+	static ofImage* ImgPillLeft;
+	static ofImage* ImgPillRight;
 
+	void drawPillLeft(float x1,float hei,int index_,float alpha_=1.0);
+	void drawPillRight(float x1,float hei,int index_,float alpha_=1.0);
 };
 
 

@@ -3,9 +3,12 @@
 <QUESTION>恭喜您讚出演化成高潮</QUESTION>
 <QUESTION>躺就儘量量睡數位又又你了我們的夢</QUESTION>
 <QUESTION>打蛋打麻將說卡在不了瞪無法出現什麼</QUESTION>
-<FOLDER_EXPORT>C:\Users\reng.tsai\Documents\_PTaitung\data\</FOLDER_EXPORT>
+<FOLDER_EXPORT>C:\Users\reng.tsai\Documents\_PTaitung\data\PTaitungMessage\</FOLDER_EXPORT>
 <NAME_EXPORT>taitung_message_</NAME_EXPORT>
 <TIME_RECORD>10000</TIME_RECORD>
 <SPECTRUM_SIZE>400</SPECTRUM_SIZE>
 <SPECTRUM_SCALE>2000</SPECTRUM_SCALE>
-<CSV_RECORD>C:\Users\reng.tsai\Documents\_PTaitung\data\TaitungMessageRecord.csv</CSV_RECORD>
+<CSV_RECORD>C:\Users\reng.tsai\Documents\_PTaitung\data\PTaitungMessage\TaitungMessageRecord.csv</CSV_RECORD>
+<TIME_SLEEP>120000</TIME_SLEEP>
+<OSC_ADDRESS>192.168.1.100</OSC_ADDRESS>
+<OSC_PORT>12345</OSC_PORT>
