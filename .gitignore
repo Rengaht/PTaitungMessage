@@ -33,3 +33,4 @@ $RECYCLE.BIN/
 *.wav
 /obj
 *.suo
+*.ipch

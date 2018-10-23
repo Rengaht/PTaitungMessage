@@ -308,6 +308,9 @@
     <ClInclude Include="..\..\..\addons\ofxCsv\src\ofxCsvRow.h">
       <Filter>addons\ofxCsv</Filter>
     </ClInclude>
+    <ClInclude Include="src\PWavRecorder.h">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="icon.rc" />

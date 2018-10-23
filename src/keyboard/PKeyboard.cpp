@@ -40,14 +40,20 @@ void PKeyboard::loadKeyLayout(string layout_file,list<PKey>& key_){
 
 			if(s=="NULL") x+=w*wid;
 			else{
+				
+				if(k=="SPACE") s=" ";
+
 				PKey kk=PKey(s,k,x+wid*KEY_MARGIN,i*wid+wid*KEY_MARGIN,w*wid-wid*KEY_MARGIN*2,h*wid-2*wid*KEY_MARGIN);
+				
+
+
 				if(s=="ENTER") kk.setImage("icon/enter.png");
 				else if(s=="LEFT") kk.setImage("icon/arrow-left.png");
 				else if(s=="RIGHT") kk.setImage("icon/arrow-right.png");
 				else if(s=="BCK") kk.setImage("icon/backspace.png");
 				else if(s=="LAN") kk.setImage("icon/language.png");
 				else if(s=="SHIFT") kk.setImage("icon/shift.png");
-				else if(s=="SPACE") kk.setImage("icon/space.png");
+				else if(k=="SPACE") kk.setImage("icon/space.png");
 
 				key_.push_back(kk);
 				

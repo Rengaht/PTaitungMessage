@@ -20,7 +20,7 @@ public:
 		_timer_out[0]=FrameTimer(_timer_in[0].getDue(),EaseDue);
 		_timer_out[1]=FrameTimer(_timer_out[1].getDue()*1.5,EaseDue*.5);
 
-		_timer_fadeout=FrameTimer(EaseDue*(1+EaseDistort*2),EaseDue*(1+EaseDistort*2)+EaseDue*.5);
+		_timer_fadeout=FrameTimer(EaseDue*.3,EaseDue*(1+EaseDistort*2)+EaseDue*.5);
 
 		_input_email=new PTextInput(1029,593,24,_ptr_app->getKeyboard(),30,"font/GothamHTF-Book.ttf");
 		_input_phone=new PTextInput(1029,653,24,_ptr_app->getKeyboard(),30,"font/GothamHTF-Book.ttf");
@@ -131,8 +131,8 @@ public:
 		_input_phone->setFocus(false);
 		_input_email->setFocus(false);
 
-		_ptr_app->setUserPhone(_input_phone->getValue());
-		_ptr_app->setUserEmail(_input_email->getValue());		
+		_ptr_app->setUserPhone(_input_phone->getWValue());
+		_ptr_app->setUserEmail(_input_email->getWValue());		
 
 		_timer_fadeout.restart();
 		SceneBase::end();
