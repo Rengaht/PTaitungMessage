@@ -12,13 +12,16 @@
 #include "Parameter.h"
 #include "PKeyboard.h"
 
-#define DRAW_DEBUG
+//#define DRAW_DEBUG
 
-#define NUM_CHANNELS 1
+#define NUM_CHANNELS 2
 #define SAMPLE_RATE 44100
 #define BUFFER_SIZE 256
 
-#define FFT_NBANDS 16
+#define FFT_NBANDS 16 //2*log2(buffer_size)
+
+
+#include "PWavRecorder.h"
 
 //#define SOUND_SCALE 500000
 //#define SPECTRUM_BUFFER_SIZE 200
@@ -33,7 +36,7 @@ class ofApp : public ofBaseApp{
 		int _select_color;
 		string _path_record;
 		string _user_id;
-		string _user_name,_user_email,_user_phone;
+		wstring _user_name,_user_email,_user_phone;
 
 
 		bool _show_keyboard;
@@ -82,7 +85,7 @@ class ofApp : public ofBaseApp{
 
 		void setRecording(bool set_);
 		ofxLibsndFileRecorder _recorder;
-		
+		WaveRecorder _wav_recorder;
 
 		ofSoundPlayer _player_record;
 		void playRecord();
@@ -97,9 +100,9 @@ class ofApp : public ofBaseApp{
 		void updateKeyboardInput(wstring str_,int cursor_,int max_);
 		
 		
-		void setUserName(string set_);
-		void setUserEmail(string set_);
-		void setUserPhone(string phone_);
+		void setUserName(wstring set_);
+		void setUserEmail(wstring set_);
+		void setUserPhone(wstring phone_);
 		
 
 		// for output

@@ -115,7 +115,15 @@ public:
 		auto u16=reinterpret_cast<const char16_t*>(cnv.data());
 		return u16;
 	}
+	static string ws2Big5(wstring& input){
+		UINT nCodePage = 950; //BIG5
+		int size = WideCharToMultiByte(nCodePage, 0, input.c_str(), -1, NULL, 0, NULL, NULL);
 
+		std::string strRet(size, 0);
+		WideCharToMultiByte(nCodePage, 0, input.c_str(), -1, (LPSTR)strRet.c_str(), size, NULL, NULL);
+
+		return strRet;
+	}
 	void saveParameterFile(){
 
 

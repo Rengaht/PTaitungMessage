@@ -57,7 +57,7 @@ void ofApp::setup(){
 	setScene(PStatus::PHOME);*/
 
 	_mode_pre=PEMPTY;
-	_mode=PCOLOR;
+	_mode=PRECORD;
 	_scene[_mode]->init();
 
 	_mesh_back.addVertex(ofVec2f(0,0));
@@ -93,13 +93,13 @@ void ofApp::update(){
 	
 	_scene[_mode]->update(dt_);
 
-	float tp=_now_millis/150000.0;
-	_mesh_back.setTexCoord(0,ofVec2f(tp,0));
-	_mesh_back.setTexCoord(1,ofVec2f(1+tp,0));
-	_mesh_back.setTexCoord(2,ofVec2f(1+tp,1));
-	_mesh_back.setTexCoord(3,ofVec2f(1+tp,1));
-	_mesh_back.setTexCoord(4,ofVec2f(tp,1));
-	_mesh_back.setTexCoord(5,ofVec2f(tp,0));
+	float tp=_now_millis/15000.0;
+	_mesh_back.setTexCoord(0,ofVec2f(tp*1,0));
+	_mesh_back.setTexCoord(1,ofVec2f((1+tp)*1,0));
+	_mesh_back.setTexCoord(2,ofVec2f((1+tp)*1,1));
+	_mesh_back.setTexCoord(3,ofVec2f((1+tp)*1,1));
+	_mesh_back.setTexCoord(4,ofVec2f(tp*1,1));
+	_mesh_back.setTexCoord(5,ofVec2f(tp*1,0));
 
 }
 
@@ -107,13 +107,15 @@ void ofApp::update(){
 void ofApp::draw(){
 	ofSetBackgroundColor(0);
 	
-
+	/* draw background */
+	//ofDisableArbTex();
 	ofEnableNormalizedTexCoords();
 	_img_back.bind();
 		_mesh_back.draw();
 	_img_back.unbind();
 	
 	ofDisableNormalizedTexCoords();
+	/*ofEnableArbTex();*/
 
 
 	if(_in_transition && _mode_pre!=PStatus::PEMPTY){
@@ -164,6 +166,19 @@ void ofApp::keyReleased(int key){
 			break;
 		case 'g':
 			PDatabase::generate();
+			break;		
+		case 'k':
+			wstring tmp_=Param::val()->getRandomQuestion();
+			wstring tmp2=L"§A¦n";
+			ofFile file_;
+			file_.open(Param::val()->_csv_record,ofFile::Append);
+			file_<<","
+				<<_user_id<<","
+				<<ofToString(_select_color+1)<<","
+				<<Param::ws2utf8(tmp_)<<","
+				<<Param::ws2utf8(tmp2)<<endl;
+
+			file_.close();
 			break;
 	}
 }
@@ -235,36 +250,45 @@ int ofApp::getSelectColor(){
 
 void ofApp::setRecording(bool set_){
 	
+	string tmp_file=ofToDataPath("tmp.wav");
+	
+
 	if(set_){
 		ofLog()<<"Start recording\n";
 
 		_user_id=ofGetTimestampString("%Y%m%d%H%M%S");
-		string pt=_param->_folder_export+_user_id+".wav";
+		_path_record=_param->_folder_export+_user_id+".wav";
 
-		cout << pt<<"----\n";
-		_recorder.setup(pt,SAMPLE_RATE,NUM_CHANNELS);
+		ofLog()<<"----"<<_path_record<<"----";
+
+		_recorder.setup(tmp_file,SAMPLE_RATE,NUM_CHANNELS);
 		_recorder.setFormat(SF_FORMAT_WAV | SF_FORMAT_PCM_16);
 		
-		_path_record=pt;	
-
+		_recording=set_;
 	}else{
+		_recording=set_;
+
 		ofLog()<<"Stop recording";		
 		_recorder.finalize();
+		
+		ofFile copy_(tmp_file);
+		copy_.copyTo(_path_record,true,true);
 	
-	
-	}
-	_recording=set_;
+		copy_.remove();
 
+	}
+	
 }
 void ofApp::audioIn(float * input, int bufferSize, int nChannels){
 	
 	if(_mode!=PRECORD) return;
 
 	if(_recording)
-		_recorder.addSamples(input,bufferSize*nChannels);
-	
+		_recorder.addSamples(input,bufferSize);
+		//_wav_recorder.addSample(input,nChannels,bufferSize);
+
 	calcVolume(input,bufferSize,nChannels);
-	BmFFT::getSimpleSpectrumMono(BUFFER_SIZE, input, _fft_band);
+	BmFFT::getSimpleSpectrum(BUFFER_SIZE, input, _fft_band);
 	
 }
 void ofApp::calcVolume(float* data,int bufferSize,int nChannels){
@@ -310,13 +334,13 @@ void ofApp::setFFT(bool set_){
 }
 
 
-void ofApp::setUserName(string set_){
+void ofApp::setUserName(wstring set_){
 	_user_name=set_;
 }
-void ofApp::setUserEmail(string set_){
+void ofApp::setUserEmail(wstring set_){
 	_user_email=set_;
 }
-void ofApp::setUserPhone(string set_){
+void ofApp::setUserPhone(wstring set_){
 	_user_phone=set_;
 }
 void ofApp::saveUserData(){
@@ -326,14 +350,11 @@ void ofApp::saveUserData(){
 		return;
 	}
 
-	//ofxCsvRow row_;
-	//row_.addString(_user_id);
-	//row_.addInt(_select_color);
-	//row_.addString(_user_name);
-	//row_.addString(_user_email);
-	//row_.addString(_user_phone);
 	
-	string csv_row=_user_id+","+ofToString(_select_color)+","+_user_name+","+_user_email+","+_user_phone+"\n";
+	string csv_row=","+_user_id+","+ofToString(_select_color+1)+","
+				   +Param::ws2Big5(_user_name)+","
+				   +Param::ws2Big5(_user_email)+","
+				   +Param::ws2Big5(_user_phone)+"\n";
 	ofLog()<<"save data:"<<csv_row<<endl;
 
 
@@ -346,7 +367,13 @@ void ofApp::saveUserData(){
 
 	ofFile file_;
 	file_.open(Param::val()->_csv_record,ofFile::Append);
-	file_<<csv_row;
+	file_<<","
+		 <<_user_id<<","
+		 <<ofToString(_select_color+1)<<","
+		 <<Param::ws2utf8(_user_name)<<","
+		 <<Param::ws2utf8(_user_email)<<","
+		 <<Param::ws2utf8(_user_phone)<<endl;
+
 	file_.close();
 
 	sendUpdateOsc();
@@ -374,5 +401,5 @@ void ofApp::sendUpdateOsc(){
 	message.setAddress("/update");
 	message.addIntArg(1);
 	sender.sendMessage(message);
-	
+	ofLog()<<"send osc!";	
 }
