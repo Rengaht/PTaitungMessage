@@ -6,9 +6,9 @@
 <FOLDER_EXPORT>C:\Users\reng.tsai\Documents\_PTaitung\data\PTaitungMessage\</FOLDER_EXPORT>
 <NAME_EXPORT>taitung_message_</NAME_EXPORT>
 <TIME_RECORD>10000</TIME_RECORD>
-<SPECTRUM_SIZE>400</SPECTRUM_SIZE>
-<SPECTRUM_SCALE>2000</SPECTRUM_SCALE>
-<CSV_RECORD>C:\Users\reng.tsai\Documents\_PTaitung\data\PTaitungMessage\TaitungMessageRecord.csv</CSV_RECORD>
+<SPECTRUM_SIZE>32</SPECTRUM_SIZE>
+<SPECTRUM_SCALE>100</SPECTRUM_SCALE>
+<CSV_RECORD>C:\Users\reng.tsai\Documents\_PTaitung\data\PTaitungMessage\test.csv</CSV_RECORD>
 <TIME_SLEEP>120000</TIME_SLEEP>
 <OSC_ADDRESS>192.168.1.100</OSC_ADDRESS>
 <OSC_PORT>12345</OSC_PORT>

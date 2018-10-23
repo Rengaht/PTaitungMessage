@@ -8,6 +8,7 @@
 #define POS_PILL_ROPEN 1310
 #define POS_PILL_RCLOSE 960
 //#define POS_PILL_Y 170
+#define SPECTRUM_HEIGHT 200
 
 #include "SceneBase.h"
 
@@ -39,7 +40,9 @@ class SceneRecord:public SceneBase{
 
 	list<float> _volume_record;
 	int _index_spectrum;
-
+	
+	ofShader _shader_blurX,_shader_blurY;
+	ofFbo _fbo1,_fbo2;
 public:
 	enum RMode {LANDING,WAIT,RECORD,PLAY,FINISH,CLOSE};
 	RMode _mode;
@@ -71,11 +74,13 @@ public:
 		ofAddListener(_timer_button_in.finish_event,this,&SceneRecord::onButtonInFinish);
 		ofAddListener(_timer_scale.finish_event,this,&SceneRecord::onScaleFinish);
 
+
+		
 	}
 	void loadImage(){
 
 		ofImage obj_;
-		obj_.loadImage("ui/obj-03.png");
+		obj_.loadImage("ui/S9dVuq4.png");
 		_img_ui.push_back(obj_);
 
 
@@ -100,6 +105,21 @@ public:
 		_mlayer=2;
 		_zindex.push_back(0);
 		_zindex.push_back(1);
+
+		_shader_blurX.load("shader/gl2/shaderBlurX");
+		_shader_blurX.begin();
+		_shader_blurX.setUniform1f("windowWidth",1920);
+		_shader_blurX.setUniform1f("windowHeight",1080);
+		_shader_blurX.end();
+
+		_shader_blurY.load("shader/gl2/shaderBlurY");
+		_shader_blurY.begin();
+		_shader_blurY.setUniform1f("windowWidth",1920);
+		_shader_blurY.setUniform1f("windowHeight",1080);
+		_shader_blurY.end();
+
+		_fbo1.allocate(obj_.getWidth(),obj_.getHeight());
+		_fbo2.allocate(obj_.getWidth(),obj_.getHeight());
 
 	}
 	void setHint(){
@@ -289,6 +309,8 @@ public:
 
 				_volume_record.clear();
 				_index_spectrum=0;
+				for(auto& en:_enable_button) en=false;
+				_enable_button[0]=true;
 				break;
 			case RECORD:
 				_timer_record.restart();									
@@ -384,6 +406,13 @@ public:
 	
 	}
 	void drawSpectrum(){
+
+		
+
+		_fbo1.begin();
+		
+		ofClear(0,0);
+
 		float x1=616;
 		float x2=1304;
 
@@ -392,43 +421,41 @@ public:
 
 		ofPushStyle();
 		ofSetColor(255);
-		ofNoFill();
-
+		ofFill();
+		
 		ofPushMatrix();
 		ofTranslate(x1,540);				
-
+		
 		float v=_ptr_app->_volume_now;
 		auto s=_volume_record.begin();
 
 		switch(_mode){
 			case LANDING:
-			case WAIT:
+			case WAIT:				
+
 				wid=(x2-x1)/(float)(FFT_NBANDS-1);
-				ofBeginShape();
-				ofVertex(0,0);
 				for(int i=0;i<FFT_NBANDS;++i){
 					//cout<<_ptr_app->_fft_band[i]<<" ";
-					ofVertex(x,-ofClamp(_ptr_app->_fft_band[i]*100,-20,200));
+					float a=ofClamp(_ptr_app->_fft_band[i]*100,-SPECTRUM_HEIGHT,SPECTRUM_HEIGHT);
+					ofDrawRectangle(x+wid*.3,-abs(a),wid*.4,abs(a)*2);
 					x+=wid;
 				}
-				//cout<<endl;
-				//ofVertex(x2-x1,0);
-				ofEndShape();
 				break;
 			case RECORD:
 			case PLAY:
 			case FINISH:
 			case CLOSE:
 				if(_index_spectrum>0){
-					ofBeginShape();
-					for(int i=0;i<_index_spectrum;++i,++s){
-						float a=ofClamp(*s,-225,225);
-						//ofDrawRectangle(x+wid*.1,0,wid*.8,a);
-						ofVertex(x,a);
-						ofVertex(x,-a);
+					//ofBeginShape();
+					
+					for(int i=0;i<=_index_spectrum;++i,++s){
+						float a=ofClamp(*s,-SPECTRUM_HEIGHT,SPECTRUM_HEIGHT);
+						ofDrawRectangle(x+wid*.3,-abs(a),wid*.4,abs(a)*2);
+						/*ofVertex(x,a);
+						ofVertex(x,-a);*/
 						x+=wid;
 					}
-					ofEndShape();
+					//ofEndShape();
 				}
 			break;
 		}
@@ -436,6 +463,53 @@ public:
 		ofPopMatrix();
 
 		ofPopStyle();
+
+		//_img_ui[0].draw(0,0);
+
+		_fbo1.end();
+		_fbo1.draw(0,0);
+		//
+		//
+		//ofEnableNormalizedTexCoords();
+
+		for(int i=0;i<1;++i){
+		
+			_fbo2.begin();
+
+			ofDisableArbTex();
+
+			ofClear(0,0);
+			_shader_blurX.begin();
+			_fbo1.getTextureReference().bind();
+			_shader_blurX.setUniform1f("blurAmnt",3.0);
+				_fbo1.draw(0,0);
+			_fbo1.getTextureReference().unbind();
+			_shader_blurX.end();
+
+			_fbo2.end();
+
+			_fbo1.begin();
+
+			ofDisableArbTex();
+
+			ofClear(0,0);
+			_shader_blurY.begin();
+			_fbo2.getTextureReference().bind();
+			_shader_blurY.setUniform1f("blurAmnt",3.0);
+				_fbo2.draw(0,0);
+			_fbo2.getTextureReference().unbind();
+			_shader_blurY.end();
+
+			_fbo1.end();
+		}
+		
+	
+
+		
+		_fbo1.draw(0,0);
+
+		
+
 	}
 	void draw(){	
 
@@ -456,8 +530,7 @@ public:
 			ofPopMatrix();
 
 			ofPopStyle();	
-		}	
-
+		}			
 	}
 };
 

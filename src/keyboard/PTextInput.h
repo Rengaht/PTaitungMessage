@@ -69,6 +69,9 @@ public:
 	void draw(){
 
 		ofPushStyle();
+
+		//ofEnableArbTex();
+
 		ofSetColor(180);
 
 		ofPushMatrix();
@@ -79,6 +82,7 @@ public:
 		string last_=(_cursor<_wstr.length())?Param::ws2utf8(_wstr.substr(_cursor,max(int(_wstr.length()-_cursor),0))):"";
 			if(_wstr.length()>0){
 				Font.drawString(pre_,0,0);
+				//Font.drawStringAsShapes(pre_,0,0);
 			}
 
 			if(_focus){
@@ -91,7 +95,10 @@ public:
 			
 				ofTranslate(_font_size*CURSOR_SPACE,0);
 			}
-			if(_wstr.length()>_cursor) Font.drawString(last_,0,0);
+			if(_wstr.length()>_cursor){
+				Font.drawString(last_,0,0);
+				//Font.drawStringAsShapes(last_,0,0);
+			}
 
 		ofPopMatrix();
 

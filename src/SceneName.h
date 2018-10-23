@@ -97,7 +97,7 @@ public:
 	}
 	void end(){
 		_input_name->setFocus(false);
-		_ptr_app->setUserName(_input_name->getValue());
+		_ptr_app->setUserName(_input_name->getWValue());
 		SceneBase::end();
 	}
 	bool handleMousePressed(float mouse_x,float mouse_y){
