@@ -66,6 +66,8 @@ public:
 
 	//static ofSoundPlayer SoundIcon;
 	static ofSoundPlayer SoundButton;
+	static ofSoundPlayer SoundFinish;
+
 	static FrameTimer _timer_sleep;
 	
 	static ofImage* ImgPillLeft;

@@ -11,7 +11,7 @@
 #define SPECTRUM_HEIGHT 200
 
 #include "SceneBase.h"
-#include "ofxPostProcessing.h"
+//#include "ofxPostProcessing.h"
 
 
 class SceneRecord:public SceneBase{
@@ -44,7 +44,7 @@ class SceneRecord:public SceneBase{
 	ofShader _shader_blurX,_shader_blurY;
 	ofFbo _fbo1,_fbo2,_fbo_tmp;
 
-	ofxPostProcessing post;
+	//ofxPostProcessing post;
 
 	int _mrepeat;
 	
@@ -128,8 +128,8 @@ public:
 		_fbo2.allocate(obj_.getWidth(),obj_.getHeight());
 		_fbo_tmp.allocate(obj_.getWidth(),obj_.getHeight());
 
-		post.init(obj_.getWidth(),obj_.getHeight());
-		post.createPass<BloomPass>()->setEnabled(true);
+		/*post.init(obj_.getWidth(),obj_.getHeight());
+		post.createPass<BloomPass>()->setEnabled(true);*/
 
 		
 		

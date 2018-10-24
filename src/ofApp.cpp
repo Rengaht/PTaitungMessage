@@ -36,6 +36,8 @@ void ofApp::setup(){
 
 	SceneBase::WinScale=max(ofGetWidth()/1920.0,ofGetHeight()/1080.0);
 	SceneBase::SoundButton.load("sound/icon.wav");
+	SceneBase::SoundFinish.load("sound/finish.wav");
+
 	TextRunner::TextFont.loadFont("font/NotoSansCJKtc-Regular.otf",21);
 	TextRunner::CharWid=TextRunner::TextFont.getFontSize()*1.4;
 
@@ -440,7 +442,9 @@ void ofApp::exit(){
 void ofApp::sendVolumeLight(){
 	if(!_serial.isInitialized()) return;
 	
-	int vol_=ofClamp(eqOutput[0]*2*255,0,255);
+	float v=eqOutput[0]*2*255;
+	v=ofClamp(v-50,0,255);
+	int vol_=ofClamp(v,0,255);
 	//ofLog()<<vol_;
 
 	unsigned char c(vol_);

@@ -181,8 +181,11 @@ bool SceneBase::handleMousePressed(float mouse_x,float mouse_y){
 		if(_button[i].inside(scalex,scaley)){
 			buttonEvent(i);
 			b=true;
+			
 			if(_order_scene==4 && i<2){
 				///no soud when recording
+			}else if(_order_scene==5){
+				SoundFinish.play();	
 			}else SoundButton.play();	
 		}
 	}
