@@ -35,7 +35,8 @@ void main()
 
 
     // vec4 color;
-	
+	vec4 src_color=texture2D(tex0, texCoordVarying);
+
    color += 1.0 * texture2D(tex0, texCoordVarying + vec2(0.0, blurAmnt * 4.0)/ resolution);
     color += 2.0 * texture2D(tex0, texCoordVarying + vec2(0.0, blurAmnt * 3.0)/ resolution);
     color += 3.0 * texture2D(tex0, texCoordVarying + vec2(0.0, blurAmnt * 2.0)/ resolution);
@@ -51,7 +52,10 @@ void main()
     color /= 25.0;
 
     //color+=texture2D(tex0, texCoordVarying);
-    // float thres=0.1;
+    //float thres=0.05;
     //if(color.r<=thres && color.g<thres && color.b<thres) color=vec4(0.0);
+    // float thres=0.01;
+    // if(length(color.rgb)<thres) color.a*=0.1;
+    // else color.a+=0.2;
     gl_FragColor =color;
 }

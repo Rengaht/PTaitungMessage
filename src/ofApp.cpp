@@ -18,11 +18,19 @@ void ofApp::setup(){
 	_sound_stream.printDeviceList();
 	//_sound_stream.setDevice(_sound_stream.getDeviceList()[1]);
 	_sound_stream.setup(this, 0, NUM_CHANNELS, SAMPLE_RATE, BUFFER_SIZE, 4);
-	_fft_band=new float[FFT_NBANDS];
-	for(int i=0;i<FFT_NBANDS;++i) _fft_band[i]=0;
+	
+	_fft = ofxFft::create(BUFFER_SIZE, OF_FFT_WINDOW_BARTLETT);
+	audioInput = new float[BUFFER_SIZE];
+	fftOutput = new float[_fft->getBinSize()];
+	eqFunction = new float[_fft->getBinSize()];
+	eqOutput = new float[_fft->getBinSize()];	
+	for(int i = 0; i < _fft->getBinSize(); i++)
+		eqFunction[i] = (float) (_fft->getBinSize() - i) / (float) _fft->getBinSize();
 
 	_param=new Param();
 
+	_serial.listDevices();
+	_serial.setup(0,19200);
 
 	_now_millis=ofGetElapsedTimeMillis();
 
@@ -79,7 +87,7 @@ void ofApp::setup(){
 	ofAddListener(SceneBase::sceneInFinish,this,&ofApp::onSceneInFinish);
 	ofAddListener(SceneBase::sceneOutFinish,this,&ofApp::onSceneOutFinish);
 
-	ofEnableAlphaBlending();
+	
 
 }
 
@@ -101,22 +109,17 @@ void ofApp::update(){
 	_mesh_back.setTexCoord(4,ofVec2f(tp*1,1));
 	_mesh_back.setTexCoord(5,ofVec2f(tp*1,0));
 
+	
+
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
 	ofSetBackgroundColor(0);
-	
-	/* draw background */
-	//ofDisableArbTex();
-	ofEnableNormalizedTexCoords();
-	_img_back.bind();
-		_mesh_back.draw();
-	_img_back.unbind();
-	
-	ofDisableNormalizedTexCoords();
-	/*ofEnableArbTex();*/
 
+	ofEnableBlendMode(OF_BLENDMODE_ADD);
+
+	drawBackground();
 
 	if(_in_transition && _mode_pre!=PStatus::PEMPTY){
 #ifdef DRAW_DEBUG
@@ -153,7 +156,14 @@ void ofApp::draw(){
 
 	
 }
+void ofApp::drawBackground(){
+	ofEnableNormalizedTexCoords();
+	_img_back.bind();
+	_mesh_back.draw();
+	_img_back.unbind();
 
+	ofDisableNormalizedTexCoords();
+}
 
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key){
@@ -175,8 +185,8 @@ void ofApp::keyReleased(int key){
 			file_<<","
 				<<_user_id<<","
 				<<ofToString(_select_color+1)<<","
-				<<Param::ws2utf8(tmp_)<<","
-				<<Param::ws2utf8(tmp2)<<endl;
+				<<Param::ws2utf8Output(tmp_)<<","
+				<<Param::ws2utf8Output(tmp2)<<endl;
 
 			file_.close();
 			break;
@@ -261,7 +271,10 @@ void ofApp::setRecording(bool set_){
 
 		ofLog()<<"----"<<_path_record<<"----";
 
-		_recorder.setup(tmp_file,SAMPLE_RATE,NUM_CHANNELS);
+	/*	ofFile tmp_(tmp_file);
+		tmp_.remove();*/
+		
+		_recorder.setup(_path_record,SAMPLE_RATE,NUM_CHANNELS);
 		_recorder.setFormat(SF_FORMAT_WAV | SF_FORMAT_PCM_16);
 		
 		_recording=set_;
@@ -271,10 +284,10 @@ void ofApp::setRecording(bool set_){
 		ofLog()<<"Stop recording";		
 		_recorder.finalize();
 		
-		ofFile copy_(tmp_file);
+		/*ofFile copy_(tmp_file);
 		copy_.copyTo(_path_record,true,true);
 	
-		copy_.remove();
+		copy_.remove();*/
 
 	}
 	
@@ -287,19 +300,36 @@ void ofApp::audioIn(float * input, int bufferSize, int nChannels){
 		_recorder.addSamples(input,bufferSize);
 		//_wav_recorder.addSample(input,nChannels,bufferSize);
 
-	calcVolume(input,bufferSize,nChannels);
-	BmFFT::getSimpleSpectrum(BUFFER_SIZE, input, _fft_band);
-	
+	memcpy(audioInput, input, sizeof(float) * bufferSize);
+
+
+	try{
+		//BmFFT::getSpectrum(BUFFER_SIZE, input, _tmp_fft);
+		_fft->setSignal(audioInput);
+		memcpy(fftOutput, _fft->getAmplitude(), sizeof(float) * _fft->getBinSize());
+
+		for(int i = 0; i < _fft->getBinSize(); i++)
+			eqOutput[i] = fftOutput[i] * eqFunction[i];
+
+		//_fft->setPolar(eqOutput, _fft->getPhase());	
+
+		
+
+	}catch(exception& e){
+		ofLog()<<e.what();
+	}
+	//calcVolume(input,bufferSize,nChannels);
+
 }
 void ofApp::calcVolume(float* data,int bufferSize,int nChannels){
 	
 	float cur_vol=0;
 	for(int i=0;i<bufferSize;++i){
 		if(nChannels==2){
-			float left_=data[i*2]*0.5*Param::val()->_spectrum_scale;
-			float right_=data[i*2+1]*0.5*Param::val()->_spectrum_scale;
-			cur_vol+=left_*left_;
-			cur_vol+=right_*right_;
+			float left_=ofClamp(data[i*2],-1,1)*0.5;
+			float right_=ofClamp(data[i*2+1],-1,1)*0.5;
+			cur_vol+=left_*left_*Param::val()->_spectrum_scale;
+			cur_vol+=right_*right_*Param::val()->_spectrum_scale;
 		}else{
 			cur_vol+=data[i]*Param::val()->_spectrum_scale;
 		}
@@ -307,7 +337,7 @@ void ofApp::calcVolume(float* data,int bufferSize,int nChannels){
 
 	cur_vol/=(float)(bufferSize*nChannels);	
 	//cur_vol=sqrt(cur_vol);
-	//ofLog()<<cur_vol;
+	ofLog()<<cur_vol;
 
 
 	//_volume_now=cur_vol;
@@ -330,7 +360,7 @@ void ofApp::playRecord(){
 }
 
 void ofApp::setFFT(bool set_){
-	_fft=set_;
+	_use_fft=set_;
 }
 
 
@@ -352,9 +382,9 @@ void ofApp::saveUserData(){
 
 	
 	string csv_row=","+_user_id+","+ofToString(_select_color+1)+","
-				   +Param::ws2Big5(_user_name)+","
-				   +Param::ws2Big5(_user_email)+","
-				   +Param::ws2Big5(_user_phone)+"\n";
+				   +Param::ws2utf8Output(_user_name)+","
+				   +Param::ws2utf8Output(_user_email)+","
+				   +Param::ws2utf8Output(_user_phone)+"\n";
 	ofLog()<<"save data:"<<csv_row<<endl;
 
 
@@ -370,9 +400,9 @@ void ofApp::saveUserData(){
 	file_<<","
 		 <<_user_id<<","
 		 <<ofToString(_select_color+1)<<","
-		 <<Param::ws2utf8(_user_name)<<","
-		 <<Param::ws2utf8(_user_email)<<","
-		 <<Param::ws2utf8(_user_phone)<<endl;
+		 <<Param::ws2utf8Output(_user_name)<<","
+		 <<Param::ws2utf8Output(_user_email)<<","
+		 <<Param::ws2utf8Output(_user_phone)<<endl;
 
 	file_.close();
 
@@ -402,4 +432,20 @@ void ofApp::sendUpdateOsc(){
 	message.addIntArg(1);
 	sender.sendMessage(message);
 	ofLog()<<"send osc!";	
+}
+void ofApp::exit(){
+	
+}
+
+void ofApp::sendVolumeLight(){
+	
+	int vol_=ofClamp(eqOutput[0]*2*255,0,255);
+	//ofLog()<<vol_;
+
+	unsigned char c(vol_);
+	
+	//ofLog()<<(int)c;
+
+	_serial.writeByte(c);	
+	_serial.flush();
 }

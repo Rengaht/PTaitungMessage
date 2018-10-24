@@ -82,8 +82,7 @@ public:
 	
 	}
 	static string ws2utf8(std::wstring &input){
-		/*std::wstring_convert<std::codecvt_utf8<wchar_t>> utf8conv;
-		return utf8conv.to_bytes(input);*/
+		
 		try{
 			static std::locale loc("");
 			auto &facet = std::use_facet<std::codecvt<wchar_t, char, std::mbstate_t>>(loc);
@@ -104,25 +103,10 @@ public:
 		}
 		return wstring();
 	}
-	static u16string utf82u16(string &input){
-		/*std::wstring_convert<std::codecvt<char16_t,char,std::mbstate_t>,char16_t> convert;
-		std::u16string u16 = convert.from_bytes(input);
-		return u16;*/
-
-		std::wstring_convert<std::codecvt_utf8_utf16<int16_t>, int16_t> convert;
-		//auto p = reinterpret_cast<const int16_t *>(input.data());
-		auto cnv=convert.from_bytes(input.data());
-		auto u16=reinterpret_cast<const char16_t*>(cnv.data());
-		return u16;
-	}
-	static string ws2Big5(wstring& input){
-		UINT nCodePage = 950; //BIG5
-		int size = WideCharToMultiByte(nCodePage, 0, input.c_str(), -1, NULL, 0, NULL, NULL);
-
-		std::string strRet(size, 0);
-		WideCharToMultiByte(nCodePage, 0, input.c_str(), -1, (LPSTR)strRet.c_str(), size, NULL, NULL);
-
-		return strRet;
+	
+	static string ws2utf8Output(wstring& input){
+		std::wstring_convert<std::codecvt_utf8<wchar_t>> utf8conv;
+		return utf8conv.to_bytes(input);
 	}
 	void saveParameterFile(){
 

@@ -48,6 +48,12 @@ void SceneBase::drawScaled(bool debug_){
 }
 void SceneBase::draw(){	
 	
+
+	//ofEnableBlendMode(ofBlendMode::OF_BLENDMODE_ADD);
+	ofPushStyle();
+	//ofEnableAlphaBlending();
+
+
 	for(auto& i:_zindex){
 				
 		ofPushStyle();
@@ -61,6 +67,10 @@ void SceneBase::draw(){
 			ofPopMatrix();
 		ofPopStyle();	
 	}	
+	
+	
+
+	ofPopStyle();
 
 }
 void SceneBase::drawLayer(int i){
@@ -171,9 +181,9 @@ bool SceneBase::handleMousePressed(float mouse_x,float mouse_y){
 		if(_button[i].inside(scalex,scaley)){
 			buttonEvent(i);
 			b=true;
-			//if(_order_scene==4 && i<2){
+			if(_order_scene==4 && i<2){
 				///no soud when recording
-			//}else SoundButton.play();	
+			}else SoundButton.play();	
 		}
 	}
 	

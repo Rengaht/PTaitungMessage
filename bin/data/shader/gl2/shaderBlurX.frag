@@ -33,7 +33,7 @@ void main()
     //     color += texture2D(tex0, texCoordVarying - (off3 / resolution)) * 0.010381362401148057;
     // }
 
-
+vec4 src_color=texture2D(tex0, texCoordVarying);
     // vec4 color;
 	
     color += 1.0 * texture2D(tex0, texCoordVarying + vec2(blurAmnt * -4.0, 0.0)/ resolution);
@@ -50,7 +50,6 @@ void main()
 
 
     color /= 25.0;
-    // float thres=0.1;
-    //if(color.r<=thres && color.g<thres && color.b<thres) color=vec4(0.0);
-    gl_FragColor =vec4(color.rgb,color.a);
+    
+    gl_FragColor =color;
 }

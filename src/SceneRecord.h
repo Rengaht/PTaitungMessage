@@ -11,7 +11,7 @@
 #define SPECTRUM_HEIGHT 200
 
 #include "SceneBase.h"
-
+#include "ofxPostProcessing.h"
 
 
 class SceneRecord:public SceneBase{
@@ -42,7 +42,10 @@ class SceneRecord:public SceneBase{
 	int _index_spectrum;
 	
 	ofShader _shader_blurX,_shader_blurY;
-	ofFbo _fbo1,_fbo2;
+	ofFbo _fbo1,_fbo2,_fbo_tmp;
+
+	ofxPostProcessing post;
+	
 public:
 	enum RMode {LANDING,WAIT,RECORD,PLAY,FINISH,CLOSE};
 	RMode _mode;
@@ -120,6 +123,13 @@ public:
 
 		_fbo1.allocate(obj_.getWidth(),obj_.getHeight());
 		_fbo2.allocate(obj_.getWidth(),obj_.getHeight());
+		_fbo_tmp.allocate(obj_.getWidth(),obj_.getHeight());
+
+		post.init(obj_.getWidth(),obj_.getHeight());
+		post.createPass<BloomPass>()->setEnabled(true);
+
+		
+		
 
 	}
 	void setHint(){
@@ -130,21 +140,41 @@ public:
 	}
 
 	void drawLayer(int i){
-		
 		float v=_timer_pill.valEaseInOut();
 		float v2=ofLerp(_begin_scale,_dest_scale,_timer_scale.valEaseOut());
 
 		float px1=ofLerp(_pos_begin_left,_pos_dest_left,v);
 		float px2=ofLerp(_pos_begin_right,_pos_dest_right,v);
 
+//		ofEnableBlendMode(ofBlendMode::OF_BLENDMODE_ADD);
 
 		switch(i){			
 			case 0: //pill
 
-				drawSpectrum();				
+				//post.begin();
+				_fbo_tmp.begin();
+				ofClear(0);
+				//_ptr_app->drawBackground();
+				drawSpectrum();
+				_fbo_tmp.end();
+				drawGlow(_fbo_tmp);	
+
+				ofPushStyle();
+				
+				_fbo_tmp.draw(0,0);
+				/*
+				ofDisableAlphaBlending();				
+				ofEnableBlendMode(OF_BLENDMODE_ADD);
+				_fbo2.draw(0,0);*/
+
+				ofPopStyle();
+				
+
+				//post.end();
+
 				drawPillLeft(px1,v2,_ptr_app->getSelectColor());
 				drawPillRight(px2,v2,_ptr_app->getSelectColor());
-
+				
 				break;
 			case 1: //button
 				ofPushStyle();
@@ -168,6 +198,8 @@ public:
 		}
 				
 		
+	//	ofDisableBlendMode();
+
 	}
 	
 
@@ -190,11 +222,15 @@ public:
 			_hint.restart();
 		}
 
+		
 		switch(_mode){		
 			case RECORD:
 			case PLAY:
-				
+				_ptr_app->sendVolumeLight();
 				if(_timer_record.finish()) setMode(FINISH);
+				break;
+			case WAIT:
+				_ptr_app->sendVolumeLight();
 				break;
 			case CLOSE:				
 				break;
@@ -407,112 +443,115 @@ public:
 	}
 	void drawSpectrum(){
 
-		
-
-		_fbo1.begin();
-		
-		ofClear(0,0);
-
+		//_ptr_app->drawBackground();
 		float x1=616;
 		float x2=1304;
 
-		float wid=(x2-x1)/(_ptr_app->_param->_spectrum_size-1);
-		float x=0;
+		float wid=wid=(x2-x1)/(float)(FFT_NBANDS);//(x2-x1)/(_ptr_app->_param->_spectrum_size-1);
+		
 
 		ofPushStyle();
 		ofSetColor(255);
 		ofFill();
 		
+
+		//ofDrawRectangle(100,400,800,800);
+
 		ofPushMatrix();
 		ofTranslate(x1,540);				
 		
 		float v=_ptr_app->_volume_now;
 		auto s=_volume_record.begin();
-
+		
+				//cout<<endl;
 		switch(_mode){
 			case LANDING:
-			case WAIT:				
+			case CLOSE:	
+			case FINISH:
+				for(int i=0;i<FFT_NBANDS;++i){
+					float a=SPECTRUM_HEIGHT*.01*ofRandom(1);
+					float x=(x2-x1)/2.0-wid/2+(i%2==1?1:-1)*wid*floor(i/2);
+					ofDrawRectangle(x+wid*.2,-abs(a),wid*.6,abs(a)*2);
+					//x+=wid;
+				}				
+				break;
+			case WAIT:	
+			case RECORD:
+				for(int i=0;i<FFT_NBANDS;++i){
+					float a=SPECTRUM_HEIGHT*.01*ofRandom(1)+ofClamp(_ptr_app->eqOutput[i]*SPECTRUM_HEIGHT,0,SPECTRUM_HEIGHT);
+					float x=(x2-x1)/2.0-wid/2+(i%2==1?1:-1)*wid*floor(i/2);
+					ofDrawRectangle(x+wid*.2,-abs(a),wid*.6,abs(a)*2);
+					//x+=wid;
+				}
+				
+				break;
+		
+			case PLAY:
+			
+				float* tmp_=ofSoundGetSpectrum(FFT_NBANDS);
 
-				wid=(x2-x1)/(float)(FFT_NBANDS-1);
 				for(int i=0;i<FFT_NBANDS;++i){
 					//cout<<_ptr_app->_fft_band[i]<<" ";
-					float a=ofClamp(_ptr_app->_fft_band[i]*100,-SPECTRUM_HEIGHT,SPECTRUM_HEIGHT);
-					ofDrawRectangle(x+wid*.3,-abs(a),wid*.4,abs(a)*2);
+					//float a=ofClamp(_ptr_app->_fft_band[i]*100,-SPECTRUM_HEIGHT,SPECTRUM_HEIGHT);
+					float a=tmp_[i];
+
+					a=SPECTRUM_HEIGHT*.01*ofRandom(1)+ofClamp(abs(a)*SPECTRUM_HEIGHT,0,SPECTRUM_HEIGHT);
+					
+					float x=(x2-x1)/2.0-wid/2+(i%2==1?1:-1)*wid*floor(i/2);
+					ofDrawRectangle(x+wid*.2,-abs(a),wid*.6,abs(a)*2);
 					x+=wid;
 				}
 				break;
-			case RECORD:
-			case PLAY:
-			case FINISH:
-			case CLOSE:
-				if(_index_spectrum>0){
-					//ofBeginShape();
-					
-					for(int i=0;i<=_index_spectrum;++i,++s){
-						float a=ofClamp(*s,-SPECTRUM_HEIGHT,SPECTRUM_HEIGHT);
-						ofDrawRectangle(x+wid*.3,-abs(a),wid*.4,abs(a)*2);
-						/*ofVertex(x,a);
-						ofVertex(x,-a);*/
-						x+=wid;
-					}
-					//ofEndShape();
-				}
-			break;
 		}
 
 		ofPopMatrix();
 
 		ofPopStyle();
 
+		//post.end();
+
 		//_img_ui[0].draw(0,0);
 
-		_fbo1.end();
-		_fbo1.draw(0,0);
-		//
-		//
-		//ofEnableNormalizedTexCoords();
+		
+	}
+	void drawGlow(ofFbo& src_){
+		
 
 		for(int i=0;i<1;++i){
-		
-			_fbo2.begin();
-
-			ofDisableArbTex();
-
-			ofClear(0,0);
-			_shader_blurX.begin();
-			_fbo1.getTextureReference().bind();
-			_shader_blurX.setUniform1f("blurAmnt",3.0);
-				_fbo1.draw(0,0);
-			_fbo1.getTextureReference().unbind();
-			_shader_blurX.end();
-
-			_fbo2.end();
 
 			_fbo1.begin();
 
 			ofDisableArbTex();
 
-			ofClear(0,0);
-			_shader_blurY.begin();
-			_fbo2.getTextureReference().bind();
-			_shader_blurY.setUniform1f("blurAmnt",3.0);
-				_fbo2.draw(0,0);
-			_fbo2.getTextureReference().unbind();
-			_shader_blurY.end();
+			ofClear(0,255);
+			_shader_blurX.begin();
+			src_.getTextureReference().bind();
+			_shader_blurX.setUniform1f("blurAmnt",2.0);
+				src_.draw(0,0);				
+			src_.getTextureReference().unbind();
+			_shader_blurX.end();
 
 			_fbo1.end();
+
+			_fbo2.begin();
+
+			ofDisableArbTex();
+
+			ofClear(0,255);
+			_shader_blurY.begin();
+			_fbo1.getTextureReference().bind();
+			_shader_blurY.setUniform1f("blurAmnt",2.0);
+				_fbo1.draw(0,0);
+			_fbo1.getTextureReference().unbind();
+			_shader_blurY.end();
+
+			_fbo2.end();
 		}
-		
-	
-
-		
-		_fbo1.draw(0,0);
-
-		
+		//_fbo2.draw(0,0);		
 
 	}
 	void draw(){	
-
+		
 		for(auto& i:_zindex){
 
 			ofPushStyle();
@@ -531,7 +570,22 @@ public:
 
 			ofPopStyle();	
 		}			
+		//ofPushStyle();
+		//
+		//ofSetColor(255,0,0);
+		//ofDrawRectangle(1500,540,100,100);
+		//ofSetColor(0,255,0);
+		//ofDrawRectangle(1550,540,100,100);
+
+		//ofSetColor(255);
+		//_fbo_tmp.draw(0,0);
+		////_fbo2.getTextureReference().draw(0,0);
+
+		//ofPopStyle();
+
+		
 	}
+
 };
 
 
