@@ -443,7 +443,7 @@ void ofApp::sendVolumeLight(){
 	if(!_serial.isInitialized()) return;
 	
 	float v=eqOutput[0]*2*255;
-	v=ofClamp(v-50,0,255);
+	v=ofClamp(v-50,1,255);
 	int vol_=ofClamp(v,0,255);
 	//ofLog()<<vol_;
 
