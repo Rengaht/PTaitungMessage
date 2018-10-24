@@ -19,7 +19,7 @@ public:
 
 		_timer_in[0]=FrameTimer(EaseDue*(1+EaseDistort*3),EaseDue*(2+EaseDistort*2)+EaseDue*.5);
 		_timer_in[1]=FrameTimer(EaseDue*.3,EaseDue*(1+EaseDistort*2)+EaseDue*.5);
-		_timer_in[2]=FrameTimer(EaseDue*.5,_timer_in[1].getDelay()+_timer_in[1].getDue()+_hint.getTotalTime());
+		_timer_in[2]=FrameTimer(EaseDue*.5,_timer_in[1].getDelay()*2.5+_timer_in[1].getDue()+_hint.getTotalTime());
 
 		_order_scene=0;
 		ofAddListener(_timer_in[0].finish_event,this,&SceneHome::onHintShoudBegin);

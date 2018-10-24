@@ -32,6 +32,8 @@ public:
 	string _osc_address;
 	int _osc_port;
 
+	int _repeat_record;;
+
 	Param(){
 		readParam();
 
@@ -76,6 +78,7 @@ public:
 		_osc_address=_param.getValue("OSC_ADDRESS","");
 		_osc_port=_param.getValue("OSC_PORT",12345);
 
+		_repeat_record=_param.getValue("REPEAT_RECORD",1);
 
 		if(!file_exist) saveParameterFile();
 
@@ -130,7 +133,8 @@ public:
 
 		_param.setValue("OSC_ADDRESS",_osc_address);
 		_param.setValue("OSC_PORT",_osc_port);
-		
+		_param.setValue("REPEAT_RECORD",_repeat_record);
+
 		_param.save(ParamFilePath);
 
 

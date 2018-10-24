@@ -8,7 +8,7 @@ Param *Param::_instance=0;
 
 float SceneBase::WinScale=1;
 ofSoundPlayer SceneBase::SoundButton=ofSoundPlayer();
-float SceneBase::EaseDue=1200;
+float SceneBase::EaseDue=1500;
 float SceneBase::EaseDelay=0;
 float SceneBase::EaseDistort=0.2;
 ofImage* SceneBase::ImgPillLeft=0;

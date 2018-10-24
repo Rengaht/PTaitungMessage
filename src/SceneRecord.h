@@ -17,7 +17,7 @@
 class SceneRecord:public SceneBase{
 	
 	//bool _mode_record;
-	ofImage _img_listen;
+	ofImage _img_listen,_img_repeat;
 	//ofImage _img_pill_left,_img_pill_right;
 
 	FrameTimer _timer_pill,_timer_scale;
@@ -45,6 +45,8 @@ class SceneRecord:public SceneBase{
 	ofFbo _fbo1,_fbo2,_fbo_tmp;
 
 	ofxPostProcessing post;
+
+	int _mrepeat;
 	
 public:
 	enum RMode {LANDING,WAIT,RECORD,PLAY,FINISH,CLOSE};
@@ -78,7 +80,7 @@ public:
 		ofAddListener(_timer_scale.finish_event,this,&SceneRecord::onScaleFinish);
 
 
-		
+		_mrepeat=0;
 	}
 	void loadImage(){
 
@@ -92,6 +94,7 @@ public:
 		_img_ui.push_back(button_);
 
 		_img_listen.loadImage("ui/button-04.png");
+		_img_repeat.loadImage("ui/button-04-2-04.png");
 
 		/*_img_pill_left.loadImage("ui/pill-23.png");
 		_img_pill_right.loadImage("ui/pill-24.png");*/
@@ -181,7 +184,10 @@ public:
 				ofSetColor(255,255*_timer_button_in.valEaseInOut()*(1-_timer_button_out.valEaseInOut()));
 					
 					if(_mode==RMode::WAIT) _img_ui[i].draw(0,0);
-					else if(_mode==RMode::FINISH) _img_listen.draw(0,0);		
+					else if(_mode==RMode::FINISH){
+						_img_listen.draw(0,0);		
+						if(_mrepeat<Param::val()->_repeat_record) _img_repeat.draw(0,0);
+					}
 
 				ofPopStyle();
 
@@ -272,7 +278,14 @@ public:
 				if(_mode==RMode::WAIT) setMode(RECORD);
 				break;
 			case 3:
-				if(_mode==RMode::FINISH) setMode(WAIT);
+				if(_mode==RMode::FINISH){
+					if(_mrepeat<Param::val()->_repeat_record){
+						setMode(WAIT);
+						_mrepeat++;
+					}else{
+						_enable_button[3]=false;
+					}
+				}
 				break;			
 			case 1:
 				if(_mode==RMode::FINISH) setMode(PLAY);
@@ -296,6 +309,8 @@ public:
 		_timer_time_out.reset();
 
 		_timer_scale.reset();
+
+		_mrepeat=0;
 	}
 
 	void onSceneInFinish(int &e){	

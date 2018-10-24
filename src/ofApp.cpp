@@ -438,6 +438,7 @@ void ofApp::exit(){
 }
 
 void ofApp::sendVolumeLight(){
+	if(!_serial.isInitialized()) return;
 	
 	int vol_=ofClamp(eqOutput[0]*2*255,0,255);
 	//ofLog()<<vol_;
