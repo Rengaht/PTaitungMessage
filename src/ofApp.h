@@ -102,7 +102,7 @@ class ofApp : public ofBaseApp{
 
 
 		PKeyboard* getKeyboard();
-		void setShowKeyboard(bool set_,PKeyboard::PLANGUAGE lan_=PKeyboard::PLANGUAGE::EN);
+		void setShowKeyboard(bool set_,PKeyboard::PLANGUAGE lan_=PKeyboard::PLANGUAGE::EN,bool show_language_=true);
 		void updateKeyboardInput(wstring str_,int cursor_,int max_);
 		
 		

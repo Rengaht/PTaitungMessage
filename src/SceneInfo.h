@@ -146,7 +146,7 @@ public:
 			
 			_input_email->setFocus(false);
 
-			_ptr_app->setShowKeyboard(true,PKeyboard::PLANGUAGE::NUMBER);
+			_ptr_app->setShowKeyboard(true,PKeyboard::PLANGUAGE::NUMBER,false);
 			_ptr_app->updateKeyboardInput(_input_phone->getWValue(),_input_phone->getCursor(),_input_phone->getMaxText());
 			_input_phone->setFocus(true);
 			
@@ -157,7 +157,7 @@ public:
 			_input_phone->setFocus(false);
 			
 
-			_ptr_app->setShowKeyboard(true,PKeyboard::PLANGUAGE::EN);
+			_ptr_app->setShowKeyboard(true,PKeyboard::PLANGUAGE::EN,false);			
 			_ptr_app->updateKeyboardInput(_input_email->getWValue(),_input_email->getCursor(),_input_email->getMaxText());
 			
 			_input_email->setFocus(true);
@@ -169,8 +169,9 @@ public:
 	void onEmailEnter(int& e){
 		_input_email->setFocus(false);
 		
-		_ptr_app->setShowKeyboard(true,PKeyboard::PLANGUAGE::NUMBER);
 		_ptr_app->updateKeyboardInput(_input_phone->getWValue(),_input_phone->getCursor(),_input_phone->getMaxText());
+		_ptr_app->setShowKeyboard(true,PKeyboard::PLANGUAGE::NUMBER,false);
+		
 		_input_phone->setFocus(true);
 
 	}

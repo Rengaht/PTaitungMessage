@@ -78,6 +78,8 @@ PKeyboard::PKeyboard(ofVec2f pos_,ofVec2f size_,int font_size_){
 	_rect_select=ofRectangle(pos_.x+size_.x+_size_key.x*.5,pos_.y,wid*3,size_.y);
 
 	PKey::Font.loadFont("font/NotoSansCJKtc-Regular.otf",font_size_);
+	_sound_button.loadSound("sound/click.wav");
+
 
 	loadKeyLayout("layout/keylayout_en.xml",_key_en);
 	loadKeyLayout("layout/keylayout_en_cap.xml",_key_en_cap);
@@ -93,7 +95,7 @@ void PKeyboard::reset(){
 	_show_select=false;
 	_cursor=0;
 	_cursor_spelling=0;
-
+	_show_language=true;
 	//setLanguage(EN);
 }
 void PKeyboard::resetSpelling(){
@@ -130,8 +132,10 @@ void PKeyboard::draw(bool debug_){
 			}
 		}
 	}
-	for(auto& k:*_key) k.draw();
-
+	for(auto& k:*_key){
+		if(!_show_language && k._key=="LAN") continue;
+		k.draw();
+	}
 	ofPopMatrix();
 
 	if(debug_) drawDebug();
@@ -153,6 +157,9 @@ bool PKeyboard::checkMouse(ofPoint pt_){
 	int t=0;
 	for(auto& k:*_key){
 		if(k.inside(pt_)){
+
+			
+
 			//ofLog()<<k._key;
 			if(k._key=="SPACE"){
 				
@@ -167,6 +174,8 @@ bool PKeyboard::checkMouse(ofPoint pt_){
 				setLanguage(EN);
 			}else if(k._key=="LAN"){
 				
+				if(!_show_language) continue;
+
 				if(_language==EN || _language==ENCAP) setLanguage(CHINESE);
 				else setLanguage(EN);
 
@@ -184,6 +193,7 @@ bool PKeyboard::checkMouse(ofPoint pt_){
 				if(_language==CHINESE) keyEventP(k);
 				else keyEvent(k);
 			}
+			_sound_button.play();
 		}
 	}
 
@@ -366,4 +376,8 @@ void PKeyboard::updateInput(wstring str_,int pcursor_,int maxtext_){
 
 	ofNotifyEvent(_event_input,_wstr);
 	ofNotifyEvent(_event_cursor,_cursor);
+}
+
+void PKeyboard::setShowLanguage(bool set_){
+	_show_language=set_;
 }

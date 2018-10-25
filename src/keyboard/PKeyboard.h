@@ -83,6 +83,11 @@ private:
 	bool _show_select;
 
 	int _max_text_length;
+	bool _show_language;
+
+
+	//sound
+	ofSoundPlayer _sound_button;
 
 public:
 	enum PLANGUAGE {EN,ENCAP,CHINESE,NUMBER};
@@ -125,6 +130,7 @@ public:
 	void reset();
 	void resetSpelling();
 
+	void setShowLanguage(bool set_);
 	
 	void updateInput(wstring str_,int pcursor_,int maxtext_);
 };

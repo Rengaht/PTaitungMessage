@@ -8,12 +8,16 @@
 
 
 
+ofSoundPlayer PTextInput::SoundFocus=ofSoundPlayer();
+
 //--------------------------------------------------------------
 void ofApp::setup(){
 
 	ofSetVerticalSync(true);
 	ofEnableSmoothing();
-	//ofSoundStreamSetup(0,NUM_CHANNELS,this, SAMPLE_RATE,BUFFER_SIZE,4);
+#ifndef DRAW_DEBUG
+	ofLogToFile("LogTaitungMessage_"+ofGetTimestampString()+".txt", true);
+#endif
 
 	_sound_stream.printDeviceList();
 	//_sound_stream.setDevice(_sound_stream.getDeviceList()[1]);
@@ -41,6 +45,8 @@ void ofApp::setup(){
 	TextRunner::TextFont.loadFont("font/NotoSansCJKtc-Regular.otf",21);
 	TextRunner::CharWid=TextRunner::TextFont.getFontSize()*1.4;
 
+	PTextInput::SoundFocus.load("sound/click.wav");
+
 	ofDisableArbTex();
 	_img_back.loadImage("ui/back.png");
 	_img_back.getTextureReference().setTextureWrap(GL_MIRRORED_REPEAT,GL_MIRRORED_REPEAT);
@@ -67,7 +73,7 @@ void ofApp::setup(){
 	setScene(PStatus::PHOME);*/
 
 	_mode_pre=PEMPTY;
-	_mode=PRECORD;
+	_mode=PINFO;
 	_scene[_mode]->init();
 
 	_mesh_back.addVertex(ofVec2f(0,0));
@@ -411,9 +417,10 @@ void ofApp::saveUserData(){
 	sendUpdateOsc();
 }
 
-void ofApp::setShowKeyboard(bool set_,PKeyboard::PLANGUAGE lan_){
+void ofApp::setShowKeyboard(bool set_,PKeyboard::PLANGUAGE lan_,bool showlan_){
 	_show_keyboard=set_;
 	_keyboard->setLanguage(lan_);	
+	_keyboard->setShowLanguage(showlan_);
 	//_keyboard->reset();
 }
 

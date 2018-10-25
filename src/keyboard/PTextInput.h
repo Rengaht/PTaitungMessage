@@ -29,6 +29,8 @@ public:
 	ofEvent<int> _event_enter;
 	PKeyboard* _kb;
 
+	static ofSoundPlayer SoundFocus;
+
 	PTextInput(float x,float y,float font_size_,PKeyboard* kb_,
 			int max_=10,string font_="font/NotoSansCJKtc-Regular.otf"){
 		
@@ -54,6 +56,7 @@ public:
 	void setFocus(bool set_){
 		_focus=set_;
 		_cursor=max((int)_wstr.size(),0);
+		if(set_) SoundFocus.play();
 	}
 	void reset(){
 		_wstr.clear();

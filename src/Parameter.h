@@ -91,7 +91,7 @@ public:
 			auto &facet = std::use_facet<std::codecvt<wchar_t, char, std::mbstate_t>>(loc);
 			return std::wstring_convert<std::remove_reference<decltype(facet)>::type, wchar_t>(&facet).to_bytes(input);
 		}catch(exception& e){
-			ofLog(ofLogLevel::OF_LOG_WARNING,e.what());
+			cout<<e.what();
 		}
 		return "";
 	}
@@ -102,7 +102,7 @@ public:
 			std::wstring_convert<std::codecvt_utf8<wchar_t>> utf8conv;
 			return utf8conv.from_bytes(input);
 		}catch(exception& e){
-			ofLog(ofLogLevel::OF_LOG_WARNING,e.what());
+			cout<<e.what();
 		}
 		return wstring();
 	}
