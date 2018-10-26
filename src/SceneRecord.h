@@ -58,7 +58,7 @@ public:
 		_order_scene=4;
 		setMode(RMode::WAIT);
 
-		_timer_record=FrameTimer(_ptr_app->_param->_time_record);
+		_timer_record=FrameTimer(Param::val()->_time_record);
 		_timer_pill=FrameTimer(800);
 		_timer_button_in=FrameTimer(400);
 		_timer_button_out=FrameTimer(200);
@@ -66,7 +66,7 @@ public:
 		_timer_time_in=FrameTimer(500);
 		_timer_time_out=FrameTimer(250);
 
-		_timer_sample=FrameTimer(_ptr_app->_param->_time_record/(float)_ptr_app->_param->_spectrum_size);
+		_timer_sample=FrameTimer(Param::val()->_time_record/(float)Param::val()->_spectrum_size);
 
 		_begin_scale=456;
 		_dest_scale=600;
@@ -136,7 +136,7 @@ public:
 
 	}
 	void setHint(){
-		auto str_=_ptr_app->_param->getRandomQuestion();
+		auto str_=Param::val()->getRandomQuestion();
 		_hint=TextRunner(227,str_);	
 		
 		//_hint.setCont(true);

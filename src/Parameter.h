@@ -32,7 +32,11 @@ public:
 	string _osc_address;
 	int _osc_port;
 
-	int _repeat_record;;
+	int _repeat_record;
+	int _arduino_device;
+
+	float _mic_low_thres;
+	float _mic_scale;
 
 	Param(){
 		readParam();
@@ -79,6 +83,10 @@ public:
 		_osc_port=_param.getValue("OSC_PORT",12345);
 
 		_repeat_record=_param.getValue("REPEAT_RECORD",1);
+		_arduino_device=_param.getValue("ARDUINO_DEVICE",0);
+
+		_mic_scale=_param.getValue("MIC_SCALE",2.0);
+		_mic_low_thres=_param.getValue("MIC_LOW_THRES",50.0);
 
 		if(!file_exist) saveParameterFile();
 
@@ -134,6 +142,10 @@ public:
 		_param.setValue("OSC_ADDRESS",_osc_address);
 		_param.setValue("OSC_PORT",_osc_port);
 		_param.setValue("REPEAT_RECORD",_repeat_record);
+
+		_param.setValue("ARDUINO_DEVICE",_arduino_device);
+		_param.setValue("MIC_SCALE",_mic_scale);
+		_param.setValue("MIC_LOW_THRES",_mic_low_thres);
 
 		_param.save(ParamFilePath);
 

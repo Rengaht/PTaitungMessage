@@ -65,7 +65,7 @@ class ofApp : public ofBaseApp{
 		void setScene(PStatus set_);
 
 
-		Param* _param;
+		//Param* _param;
 
 	
 		bool _in_transition;

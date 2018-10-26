@@ -16,7 +16,9 @@ void ofApp::setup(){
 	ofSetVerticalSync(true);
 	ofEnableSmoothing();
 #ifndef DRAW_DEBUG
-	ofLogToFile("LogTaitungMessage_"+ofGetTimestampString()+".txt", true);
+	ofLogToFile("log/LogTaitungMessage_"+ofGetTimestampString()+".txt", true);
+	ofSetFullscreen(true);	
+	//ofHideCursor();
 #endif
 
 	_sound_stream.printDeviceList();
@@ -31,10 +33,10 @@ void ofApp::setup(){
 	for(int i = 0; i < _fft->getBinSize(); i++)
 		eqFunction[i] = (float) (_fft->getBinSize() - i) / (float) _fft->getBinSize();
 
-	_param=new Param();
+	//_param=new Param();
 
 	_serial.listDevices();
-	_serial.setup(0,19200);
+	_serial.setup(Param::val()->_arduino_device,19200);
 
 	_now_millis=ofGetElapsedTimeMillis();
 
@@ -73,7 +75,7 @@ void ofApp::setup(){
 	setScene(PStatus::PHOME);*/
 
 	_mode_pre=PEMPTY;
-	_mode=PINFO;
+	_mode=PHOME;
 	_scene[_mode]->init();
 
 	_mesh_back.addVertex(ofVec2f(0,0));
@@ -275,7 +277,7 @@ void ofApp::setRecording(bool set_){
 		ofLog()<<"Start recording\n";
 
 		_user_id=ofGetTimestampString("%Y%m%d%H%M%S");
-		_path_record=_param->_folder_export+_user_id+".wav";
+		_path_record=Param::val()->_folder_export+_user_id+".wav";
 
 		ofLog()<<"----"<<_path_record<<"----";
 
@@ -449,12 +451,10 @@ void ofApp::exit(){
 void ofApp::sendVolumeLight(){
 	if(!_serial.isInitialized()) return;
 	
-	float v=eqOutput[0]*2*255;
-	v=ofClamp(v-50,1,255);
-	int vol_=ofClamp(v,0,255);
-	//ofLog()<<vol_;
+	float v=eqOutput[0]*Param::val()->_mic_scale*255;
+	v=ofClamp(v-Param::val()->_mic_low_thres,1,255);	
 
-	unsigned char c(vol_);
+	unsigned char c(v);
 	
 	//ofLog()<<(int)c;
 
