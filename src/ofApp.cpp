@@ -13,12 +13,13 @@ ofSoundPlayer PTextInput::SoundFocus=ofSoundPlayer();
 //--------------------------------------------------------------
 void ofApp::setup(){
 
-	ofSetVerticalSync(true);
-	ofEnableSmoothing();
+	//ofSetVerticalSync(true);
+	ofSetFrameRate(60);
+	           ofEnableSmoothing();
 #ifndef DRAW_DEBUG
 	ofLogToFile("log/LogTaitungMessage_"+ofGetTimestampString()+".txt", true);
-	ofSetFullscreen(true);	
-	//ofHideCursor();
+	//ofSetFullscreen(true);	
+	ofHideCursor();
 #endif
 
 	_sound_stream.printDeviceList();
@@ -97,7 +98,8 @@ void ofApp::setup(){
 	ofAddListener(SceneBase::sceneInFinish,this,&ofApp::onSceneInFinish);
 	ofAddListener(SceneBase::sceneOutFinish,this,&ofApp::onSceneOutFinish);
 
-	
+	_timer_osc_delay=FrameTimer(20000);
+	ofAddListener(_timer_osc_delay.finish_event,this,&ofApp::sendUpdateOsc);
 
 }
 
@@ -109,6 +111,7 @@ void ofApp::update(){
 
 	if(_in_transition && _mode_pre!=PStatus::PEMPTY)_scene[_mode_pre]->update(dt_);
 	
+	_timer_osc_delay.update(dt_);
 	_scene[_mode]->update(dt_);
 
 	float tp=_now_millis/15000.0;
@@ -155,6 +158,7 @@ void ofApp::draw(){
 	}
 #else
 	_scene[_mode]->drawScaled(false);
+	//ofDrawBitmapString("fps= "+ofToString(ofGetFrameRate()),10,10);
 	if(_show_keyboard){
 		ofPushMatrix();
 		ofScale(SceneBase::WinScale,SceneBase::WinScale);
@@ -182,7 +186,7 @@ void ofApp::keyReleased(int key){
 			setScene(PHOME);
 			break;
 		case 'f':
-			ofToggleFullscreen();
+			//ofToggleFullscreen();
 			break;
 		case 'g':
 			PDatabase::generate();
@@ -416,7 +420,8 @@ void ofApp::saveUserData(){
 
 	file_.close();
 
-	sendUpdateOsc();
+	//sendUpdateOsc();
+	_timer_osc_delay.restart();
 }
 
 void ofApp::setShowKeyboard(bool set_,PKeyboard::PLANGUAGE lan_,bool showlan_){
@@ -434,7 +439,7 @@ void ofApp::updateKeyboardInput(wstring str_,int cursor_,int max_){
 }
 
 
-void ofApp::sendUpdateOsc(){
+void ofApp::sendUpdateOsc(int &t){
 	ofxOscSender sender;
 	sender.setup(Param::val()->_osc_address,Param::val()->_osc_port);
 

@@ -114,9 +114,9 @@ class ofApp : public ofBaseApp{
 		// for output
 		//ofxCsv _csv_user_output;
 		void saveUserData();
+		FrameTimer _timer_osc_delay;
 
-
-		void sendUpdateOsc();
+		void sendUpdateOsc(int& t);
 
 		ofSerial _serial;
 		void sendVolumeLight();
